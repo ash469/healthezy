@@ -3,22 +3,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import { Document, Page, Text, View, StyleSheet, Image as PDFImage, pdf } from '@react-pdf/renderer';
 import '@/components/doctors/Confirmation.css';
-
-// Mock data
-const BOOKING_DETAILS = {
-    doctor: {
-        name: 'Dr. Kailash',
-        specialty: 'Urologist | Apollo Hospital',
-        id: 'MBA, MBBS',
-        imageUrl: '/doctor.png',
-    },
-    patient: 'Mr. Rahul Mishra',
-    date: '25 Nov 2025 | Tuesday',
-    time: '10:00 AM',
-    slot: 'Morning'
-};
+import { getDoctorById } from '@/data/doctors';
 
 // --- PDF Styles and Document Definition ---
 const styles = StyleSheet.create({
@@ -102,28 +90,28 @@ const styles = StyleSheet.create({
     },
 });
 
-const AppointmentPDF = () => (
+const AppointmentPDF = ({ data }: { data: any }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <Text style={styles.watermark}>HEALTHEZY</Text>
 
             <View style={styles.imageContainer}>
-                <PDFImage src={BOOKING_DETAILS.doctor.imageUrl} />
+                <PDFImage src={data.doctor.imageUrl} />
             </View>
 
-            <Text style={styles.doctorName}>{BOOKING_DETAILS.doctor.name}</Text>
-            <Text style={styles.doctorSpecialty}>{BOOKING_DETAILS.doctor.specialty}</Text>
-            <Text style={styles.doctorId}>{BOOKING_DETAILS.doctor.id}</Text>
+            <Text style={styles.doctorName}>{data.doctor.name}</Text>
+            <Text style={styles.doctorSpecialty}>{data.doctor.specialty}</Text>
+            <Text style={styles.doctorId}>{data.doctor.hospital}</Text>
 
             <View style={styles.divider} />
 
             <Text style={styles.sectionTitle}>Appointment Details</Text>
 
             <Text style={styles.label}>Patient:</Text>
-            <Text style={[styles.value, { fontWeight: 'bold' }]}>{BOOKING_DETAILS.patient}</Text>
+            <Text style={[styles.value, { fontWeight: 'bold' }]}>{data.patient}</Text>
 
-            <Text style={styles.highlightValue}>{BOOKING_DETAILS.time}</Text>
-            <Text style={styles.value}>{BOOKING_DETAILS.date}</Text>
+            <Text style={styles.highlightValue}>{data.time}</Text>
+            <Text style={styles.value}>{data.date}</Text>
 
             <Text style={styles.footer}>Booked via Healthezy</Text>
         </Page>
@@ -133,16 +121,48 @@ const AppointmentPDF = () => (
 export default function BookingConfirmationPage() {
     const [isClient, setIsClient] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
+    const router = useRouter();
+    const params = useParams();
+    const searchParams = useSearchParams();
+
+    const doctorId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const doctor = getDoctorById(doctorId);
+
+    // In a real app, date/slot would come from searchParams or global state
+    const date = searchParams.get('date') || '25 Nov 2025 | Tuesday';
+    const slot = searchParams.get('slot') || '10:00';
 
     useEffect(() => {
         setIsClient(true);
     }, []);
 
+    if (!doctor) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+                <h2 className="text-xl font-bold text-gray-800 mb-2">Doctor Not Found</h2>
+                <button
+                    onClick={() => router.push('/doctors')}
+                    className="bg-[#0e8a93] text-white px-6 py-2 rounded-lg mt-4"
+                >
+                    Back to Doctors
+                </button>
+            </div>
+        );
+    }
+
+    const bookingDetails = {
+        doctor: doctor,
+        patient: 'Mr. Rahul Mishra', // Mock patient
+        date: date,
+        time: slot,
+        slot: 'Confirmed Slot' // Generic label or derive based on time
+    };
+
     const handleDownload = async () => {
         if (isGenerating) return;
         setIsGenerating(true);
         try {
-            const blob = await pdf(<AppointmentPDF />).toBlob();
+            const blob = await pdf(<AppointmentPDF data={bookingDetails} />).toBlob();
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
@@ -165,26 +185,26 @@ export default function BookingConfirmationPage() {
                 <div className="confirmation-doctor-section">
                     <div className="conf-doc-img">
                         <Image
-                            src={BOOKING_DETAILS.doctor.imageUrl}
-                            alt={BOOKING_DETAILS.doctor.name}
+                            src={doctor.imageUrl}
+                            alt={doctor.name}
                             width={130}
                             height={130}
                         />
                     </div>
-                    <h3>{BOOKING_DETAILS.doctor.name}</h3>
-                    <p>{BOOKING_DETAILS.doctor.specialty}</p>
-                    <p>{BOOKING_DETAILS.doctor.id}</p>
+                    <h3>{doctor.name}</h3>
+                    <p>{doctor.specialty}</p>
+                    <p>{doctor.hospital}</p>
                 </div>
 
                 <div className="confirmation-details-section">
                     <h2 className="success-title">Appointment Booked For</h2>
-                    <h3 className="patient-name">{BOOKING_DETAILS.patient}</h3>
+                    <h3 className="patient-name">{bookingDetails.patient}</h3>
 
                     <div className="booking-info">
-                        <p>{BOOKING_DETAILS.date}</p>
-                        <p>{BOOKING_DETAILS.slot}</p>
+                        <p>{bookingDetails.date}</p>
+                        <p>{bookingDetails.slot}</p>
                         <span className="slot-time-pill">
-                            {BOOKING_DETAILS.time}
+                            {bookingDetails.time}
                         </span>
                     </div>
 

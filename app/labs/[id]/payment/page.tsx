@@ -3,49 +3,41 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image from 'next/image';
-import '@/components/doctors/Payment.css';
-import { getDoctorById } from '@/data/doctors';
+import '@/components/doctors/Payment.css'; 
+import { getLabById } from '@/data/labs';
 
-export default function PaymentPage() {
+export default function LabPaymentPage() {
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
-    const slot = searchParams.get('slot');
 
-    // Fetch doctor data
-    const doctorId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const doctor = getDoctorById(doctorId);
+    const labId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const lab = getLabById(labId);
+
+    const slot = searchParams.get('slot');
+    const date = searchParams.get('date');
+    const testIds = searchParams.get('tests')?.split(',') || [];
+
+    const selectedTests = lab?.availableTests.filter(t => testIds.includes(t.id)) || [];
 
     const [step, setStep] = useState<'summary' | 'method'>('summary');
     const [selectedMethod, setSelectedMethod] = useState('paytm');
 
+    const subtotal = selectedTests.reduce((sum, t) => sum + t.price, 0);
     const charges = {
-        appointment: doctor?.price || 700.00,
-        emergency: 0.00,
+        subtotal: subtotal,
         other: 0.00,
-        total: doctor?.price || 700.00
+        total: subtotal
     };
 
-    if (!doctor) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[400px]">
-                <h2 className="text-xl font-bold text-gray-800 mb-2">Doctor Not Found</h2>
-                <button
-                    onClick={() => router.push('/doctors')}
-                    className="bg-[#0e8a93] text-white px-6 py-2 rounded-lg mt-4"
-                >
-                    Back to Doctors
-                </button>
-            </div>
-        );
-    }
+    if (!lab) return <div>Lab not found</div>;
 
     const handleProceed = () => {
         setStep('method');
     };
 
     const handleConfirm = () => {
-        router.push(`/doctors/${doctor.id}/booking-confirmation?slot=${slot}&date=${searchParams.get('date')}`);
+        router.push(`/labs/${lab.id}/booking-confirmation?slot=${slot}&date=${date}&tests=${testIds.join(',')}`);
     };
 
     return (
@@ -54,17 +46,30 @@ export default function PaymentPage() {
                 <div className="payment-doctor-card">
                     <div className="payment-doctor-image">
                         <Image
-                            src={doctor.imageUrl}
-                            alt={doctor.name}
+                            src={lab.imageUrl}
+                            alt={lab.name}
                             width={120}
                             height={120}
                         />
                     </div>
                     <div className="payment-doctor-details">
-                        <h3>{doctor.name}</h3>
-                        <p>{doctor.specialty}</p>
-                        <p>{doctor.hospital}</p>
+                        <h3>{lab.name}</h3>
+                        <p>{lab.address}</p>
+                        <p>{lab.location}</p>
                     </div>
+                </div>
+
+                {/* List Selected Tests */}
+                <div style={{ marginTop: '1.5rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
+                    <h4 style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#333' }}>Selected Tests</h4>
+                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                        {selectedTests.map(test => (
+                            <li key={test.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: '#555' }}>
+                                <span>{test.name}</span>
+                                <span style={{ fontWeight: 'bold' }}>₹{test.price}</span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
             </div>
 
@@ -73,12 +78,8 @@ export default function PaymentPage() {
                 <table className="bill-table">
                     <tbody>
                         <tr>
-                            <td>Appointment Fees</td>
-                            <td>{charges.appointment.toFixed(2)}</td>
-                        </tr>
-                        <tr>
-                            <td>Emergency Appointment Fees</td>
-                            <td>{charges.emergency.toFixed(2)}</td>
+                            <td>Tests Total</td>
+                            <td>{charges.subtotal.toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td>Other Charges</td>
@@ -101,34 +102,18 @@ export default function PaymentPage() {
                         <h3 className="payment-methods-header">Payment Option</h3>
 
                         <div className="payment-options-grid">
-                            <div
-                                className={`payment-option ${selectedMethod === 'paytm' ? 'selected' : ''}`}
-                                onClick={() => setSelectedMethod('paytm')}
-                            >
-                                <span>Paytm</span>
-                            </div>
-                            <div
-                                className={`payment-option ${selectedMethod === 'upi' ? 'selected' : ''}`}
-                                onClick={() => setSelectedMethod('upi')}
-                            >
-                                <span>UPI</span>
-                            </div>
-                            <div
-                                className={`payment-option ${selectedMethod === 'phonepe' ? 'selected' : ''}`}
-                                onClick={() => setSelectedMethod('phonepe')}
-                            >
-                                <span>PhonePe</span>
-                            </div>
-                            <div
-                                className={`payment-option ${selectedMethod === 'card' ? 'selected' : ''}`}
-                                onClick={() => setSelectedMethod('card')}
-                            >
-                                <span>Card</span>
-                            </div>
+                            {['paytm', 'upi', 'phonepe', 'card'].map(method => (
+                                <div
+                                    key={method}
+                                    className={`payment-option ${selectedMethod === method ? 'selected' : ''}`}
+                                    onClick={() => setSelectedMethod(method)}
+                                >
+                                    <span style={{ textTransform: 'capitalize' }}>{method}</span>
+                                </div>
+                            ))}
                         </div>
 
                         <div className="qr-section">
-                            {/* Mock QR Code */}
                             <div className="qr-code flex items-center justify-center border text-xs text-gray-400">
                                 QR Code
                             </div>

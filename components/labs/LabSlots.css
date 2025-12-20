@@ -1,0 +1,205 @@
+/* Main Container */
+.slot-booking-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Top Section: Split View */
+.slot-top-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+/* reused banner style or slightly modified for this view */
+.lab-slot-banner {
+    flex: 1;
+    background-color: #008996;
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    color: white;
+    max-width: 500px;
+    /* Limit width as per image */
+}
+
+.lab-banner-img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.lab-banner-details h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+}
+
+.lab-banner-details p {
+    font-size: 0.8rem;
+    line-height: 1.4;
+    opacity: 0.9;
+    margin: 0;
+}
+
+/* Right Side: Bill Summary */
+.bill-summary {
+    flex: 0.8;
+    color: #333;
+    padding-top: 1rem;
+}
+
+.bill-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.bill-row.total {
+    margin-top: 2rem;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #000;
+}
+
+/* Slot Picker Section */
+.slot-picker-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    /* Align buttons to bottom right */
+}
+
+.slot-left-pane {
+    flex: 1;
+}
+
+.slot-header {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    margin-bottom: 1.5rem;
+}
+
+.slot-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.date-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+}
+
+.nav-arrow {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.slot-group-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    color: #000;
+}
+
+.slots-grid {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.slot-btn {
+    padding: 0.5rem 1.5rem;
+    border: 1px solid #008996;
+    border-radius: 20px;
+    background: white;
+    color: #008996;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    min-width: 80px;
+}
+
+.slot-btn.selected {
+    background-color: #008996;
+    color: white;
+}
+
+/* Action Buttons */
+.slot-actions {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.btn-cancel {
+    padding: 0.8rem 2rem;
+    border: 1px solid #ff5252;
+    color: #ff5252;
+    background: white;
+    border-radius: 4px;
+    /* Slightly rounded */
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-proceed {
+    padding: 0.8rem 2rem;
+    background-color: #008996;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.btn-proceed:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+    .slot-top-section {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .lab-slot-banner {
+        width: 100%;
+        max-width: none;
+    }
+
+    .slot-picker-container {
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    .slot-actions {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .btn-cancel,
+    .btn-proceed {
+        flex: 1;
+        text-align: center;
+    }
+}

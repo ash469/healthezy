@@ -7,4 +7,5 @@ export interface Doctor {
     imageUrl: string;
     rating: number;
     experience?: string;
+    gender?: 'Male' | 'Female';
 }

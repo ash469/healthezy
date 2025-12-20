@@ -1,48 +1,37 @@
+'use client';
+
+import { useState } from 'react';
 import DoctorCard from '@/components/doctors/DoctorCard';
 import '@/components/doctors/Doctors.css';
 import { Doctor } from '@/types/doctor';
-
-// Mock data - replace with API call later
-const doctors: Doctor[] = [
-    {
-        id: '1',
-        name: 'Dr. Mehra',
-        specialty: 'General Physician',
-        hospital: 'AIIMS | New Delhi',
-        price: 700,
-        imageUrl: '/doctor.png', 
-        rating: 4.5,
-    },
-    {
-        id: '2',
-        name: 'Dr. Sharma',
-        specialty: 'Cardiologist',
-        hospital: 'Fortis | Mumbai',
-        price: 1200,
-        imageUrl: '/doctor.png',
-        rating: 4.8,
-    },
-    {
-        id: '3',
-        name: 'Dr. Gupta',
-        specialty: 'Dermatologist',
-        hospital: 'Apollo | Bangalore',
-        price: 800,
-        imageUrl: '/doctor.png',
-        rating: 4.6,
-    },
-    {
-        id: '4',
-        name: 'Dr. Kapoor',
-        specialty: 'Pediatrician',
-        hospital: 'Max | Delhi',
-        price: 600,
-        imageUrl: '/doctor.png',
-        rating: 4.7,
-    }
-];
+import { doctors } from '@/data/doctors';
 
 export default function DoctorsPage() {
+    const [filterGender, setFilterGender] = useState<string>('Gender');
+    const [sortBy, setSortBy] = useState<string>('Sort by'); 
+
+    // Filter Logic
+    const filteredDoctors = doctors.filter(doctor => {
+        if (filterGender === 'Gender') return true;
+        return doctor.gender === filterGender;
+    });
+
+    // Sort Logic
+    // Create a copy to avoid mutating the original filtered array in place (though map returns new array, sort mutates)
+    const sortedDoctors = [...filteredDoctors].sort((a, b) => {
+        if (sortBy === 'Fees: Low to High') {
+            return a.price - b.price;
+        } else if (sortBy === 'Fees: High to Low') {
+            return b.price - a.price;
+        } else if (sortBy === 'Experience') {
+            // Parse "10+ Years" -> 10
+            const expA = parseInt(a.experience || '0');
+            const expB = parseInt(b.experience || '0');
+            return expB - expA; // Descending experience
+        }
+        return 0;
+    });
+
     return (
         <div className="doctors-container">
             <div className="doctors-header">
@@ -51,15 +40,24 @@ export default function DoctorsPage() {
                 <div className="doctors-filters">
                     <div className="filter-group">
                         <label className="filter-label">Filter</label>
-                        <select className="filter-select">
+                        <select
+                            className="filter-select"
+                            value={filterGender}
+                            onChange={(e) => setFilterGender(e.target.value)}
+                        >
                             <option>Gender</option>
-                            <option>Male</option>
-                            <option>Female</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
                         </select>
                     </div>
                     <div className="filter-group">
                         <label className="filter-label">Sort by</label>
-                        <select className="filter-select">
+                        <select
+                            className="filter-select"
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value)}
+                        >
+                            <option>Sort by</option>
                             <option>Fees: Low to High</option>
                             <option>Fees: High to Low</option>
                             <option>Experience</option>
@@ -69,7 +67,7 @@ export default function DoctorsPage() {
             </div>
 
             <div className="doctors-list">
-                {doctors.map((doctor) => (
+                {sortedDoctors.map((doctor) => (
                     <DoctorCard key={doctor.id} doctor={doctor} />
                 ))}
             </div>

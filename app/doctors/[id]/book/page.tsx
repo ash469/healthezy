@@ -1,19 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import '@/components/doctors/SlotBooking.css';
-
-const DOCTOR_DATA = {
-    id: '1',
-    name: 'Dr. Kailash',
-    specialty: 'Urologist | Apollo Hospital',
-    hospital: 'MBBS, MBBS',
-    imageUrl: '/doctor.png',
-    price: 700,
-};
+import { getDoctorById } from '@/data/doctors';
 
 const SLOTS = {
     morning: ['09:00', '10:00', '10:45', '12:00'],
@@ -24,9 +16,27 @@ const SLOTS = {
 export default function SlotBookingPage() {
     const router = useRouter();
     const params = useParams();
+    const doctorId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const doctor = getDoctorById(doctorId);
+
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
     // Initialize with a specific date or today
     const [currentDate, setCurrentDate] = useState(new Date('2025-11-25'));
+
+    if (!doctor) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+                <h2 className="text-xl font-bold text-gray-800 mb-2">Doctor Not Found</h2>
+                <p className="text-gray-600 mb-4">The doctor you are looking for does not exist.</p>
+                <button
+                    onClick={() => router.push('/doctors')}
+                    className="bg-[#0e8a93] text-white px-6 py-2 rounded-lg hover:bg-[#0b6c73] transition-colors"
+                >
+                    Back to Doctors
+                </button>
+            </div>
+        );
+    }
 
     const formatDate = (date: Date) => {
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -62,16 +72,16 @@ export default function SlotBookingPage() {
             <div className="doctor-summary-card">
                 <div className="doctor-summary-image">
                     <Image
-                        src={DOCTOR_DATA.imageUrl}
-                        alt={DOCTOR_DATA.name}
+                        src={doctor.imageUrl}
+                        alt={doctor.name}
                         width={130}
                         height={130}
                         className="object-cover"
                     />
                 </div>
-                <h2 className="doctor-summary-name">{DOCTOR_DATA.name}</h2>
-                <p className="doctor-summary-specialty">{DOCTOR_DATA.specialty}</p>
-                <p className="doctor-summary-hospital">{DOCTOR_DATA.hospital}</p>
+                <h2 className="doctor-summary-name">{doctor.name}</h2>
+                <p className="doctor-summary-specialty">{doctor.specialty}</p>
+                <p className="doctor-summary-hospital">{doctor.hospital}</p>
             </div>
 
             <div className="slot-picker-section">

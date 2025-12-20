@@ -1,0 +1,414 @@
+/* Main Container */
+.lab-booking-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    font-family: 'Outfit', sans-serif;
+}
+
+/* Header Section: Banner + Sidebar Actions */
+.lab-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+/* Lab Banner (Teal Box) */
+.lab-banner {
+    flex: 1;
+    background-color: #008996;
+    /* Teal color from image */
+    border-radius: 12px;
+    padding: 2rem;
+    display: flex;
+    gap: 2rem;
+    color: white;
+    /* No shadow in the flat design image? keeping subtle just in case */
+    box-shadow: 0 4px 12px rgba(0, 137, 150, 0.2);
+}
+
+.lab-banner-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 4px;
+    /* Image looks squarish with slight radius */
+}
+
+.lab-banner-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.lab-banner-info h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    line-height: 1.2;
+}
+
+.lab-banner-info p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin: 0 0 0.25rem 0;
+    font-weight: 300;
+    color: #e0f2f1;
+}
+
+/* Header Sidebar (Cart & Filters) */
+.lab-header-sidebar {
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    /* Align contents to right */
+    height: 180px;
+    /* Align roughly with banner height */
+}
+
+.cart-icon-container {
+    cursor: pointer;
+    margin-bottom: auto;
+    /* Push to top */
+}
+
+.cart-icon {
+    font-size: 2.5rem;
+    color: #006064;
+    position: relative;
+}
+
+/* Custom Cart Icon logic if using text/emoji, but user image has a specific icon. 
+   We will try to use a unicode or existing icon that looks similar.
+   Image has a cart with a plus sign inside. */
+.cart-plus-badge {
+    position: absolute;
+    top: 40%;
+    left: 45%;
+    transform: translate(-50%, -50%);
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #006064;
+}
+
+
+.filter-row {
+    display: flex;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.filter-group {
+    flex: 1;
+}
+
+.filter-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #888;
+    margin-bottom: 0.5rem;
+}
+
+.filter-select {
+    width: 100%;
+    padding: 0.5rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #eee;
+    /* Light grey background */
+    font-size: 0.9rem;
+    color: #555;
+    outline: none;
+    cursor: pointer;
+}
+
+/* Search Bar */
+.search-bar-container {
+    margin-bottom: 3rem;
+}
+
+.search-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #e0e0e0;
+    /* Light grey from image */
+    border-radius: 2rem;
+    /* Fully rounded pill */
+    padding: 0.5rem;
+    /* Padding for the container */
+    padding-left: 0.5rem;
+    width: 100%;
+    /* max-width: 600px; */
+    /* Design shows full width relative to content? */
+}
+
+.search-icon {
+    font-size: 1.2rem;
+    color: white;
+    background-color: #008996;
+    /* Teal circle */
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.search-input {
+    border: none;
+    background: transparent;
+    outline: none;
+    width: 100%;
+    font-size: 0.95rem;
+    color: #777;
+    margin-left: 1rem;
+}
+
+.search-input::placeholder {
+    color: #bbb;
+}
+
+/* Test Grid */
+.test-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* Force 3 columns as per image */
+    gap: 2rem;
+}
+
+@media (max-width: 1024px) {
+    .test-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .test-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+.test-card {
+    background-color: #e0f7fa;
+    /* Light teal background match */
+    padding: 2rem;
+    border-radius: 4px;
+    /* Sharper corners in image? No, looks standard */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 250px;
+    position: relative;
+    /* No shadow in image */
+}
+
+.test-title {
+    color: #008996 !important;
+    /* Dark teal */
+    font-weight: 800;
+    font-size: 1rem;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+    line-height: 1.4;
+}
+
+.test-subtitle {
+    font-size: 0.9rem;
+    color: #00acc1 !important;
+    /* Lighter teal */
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+
+.test-price {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #263238;
+    /* Dark grey/black */
+    margin-bottom: 0.5rem;
+}
+
+.test-features {
+    display: flex;
+    gap: 1.5rem;
+    font-size: 0.8rem;
+    color: #333;
+    margin-bottom: 2rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 500;
+    font-size: 0.75rem;
+}
+
+.dot-icon {
+    font-size: 0.6rem;
+    color: #008996;
+    /* Teal star/dot */
+}
+
+/* Custom Radio Dot */
+.radio-dot {
+    width: 8px;
+    height: 8px;
+    border: 1px solid #00acc1;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.radio-dot.active {
+    background-color: #00acc1;
+}
+
+
+.test-card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+}
+
+.add-btn {
+    background-color: #008996;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.7rem;
+    cursor: pointer;
+    text-transform: capitalize;
+}
+
+.add-btn:hover {
+    background-color: #006064;
+}
+
+.add-btn.added {
+    background-color: #004d40;
+}
+
+.know-more-link {
+    font-size: 0.7rem;
+    color: #008996;
+    font-weight: bold;
+    /* Italic/Bold in image? Looks normal bold */
+    cursor: pointer;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .lab-booking-container {
+        padding: 1rem;
+    }
+
+    .lab-header-section {
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .lab-banner {
+        width: 100%;
+        padding: 1.5rem;
+        flex-direction: row;
+        align-items: center;
+        gap: 1rem;
+        order: 2;
+        /* Place Banner below Cart */
+    }
+
+    .lab-banner-image {
+        width: 80px;
+        height: 80px;
+    }
+
+    .lab-banner-info h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .lab-banner-info p {
+        font-size: 0.75rem;
+        line-height: 1.2;
+    }
+
+    /* Reposition Cart Icon for Mobile */
+    .lab-header-sidebar {
+        width: 100%;
+        height: auto;
+        position: static;
+        /* Remove absolute positioning */
+        order: 1;
+        /* Place Cart above Banner */
+        flex-direction: row;
+        /* Ensure proper alignment */
+        justify-content: flex-end;
+        align-items: center;
+        padding-right: 0.5rem;
+    }
+
+    .cart-icon {
+        font-size: 2rem;
+    }
+
+    .cart-plus-badge {
+        font-size: 0.6rem;
+    }
+
+    /* Search Bar */
+    .search-bar-container {
+        margin-bottom: 2rem;
+    }
+
+    .search-input-wrapper {
+        padding: 0.4rem;
+        padding-left: 0.5rem;
+    }
+
+    .search-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+
+    .search-input {
+        font-size: 0.85rem;
+        margin-left: 0.5rem;
+    }
+
+    /* Test Grid - Single Column */
+    .test-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .test-card {
+        padding: 1.5rem;
+        min-height: auto;
+    }
+
+    .test-price {
+        font-size: 1.8rem;
+    }
+
+    .add-btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.65rem;
+    }
+}
