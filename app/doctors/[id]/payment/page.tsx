@@ -50,7 +50,9 @@ export default function PaymentPage() {
 
     return (
         <div className="payment-container">
+            {/* Left Section: Doctor Card + Payment Options */}
             <div className="payment-left-section">
+                {/* Doctor Card */}
                 <div className="payment-doctor-card">
                     <div className="payment-doctor-image">
                         <Image
@@ -66,6 +68,31 @@ export default function PaymentPage() {
                         <p>{doctor.hospital}</p>
                     </div>
                 </div>
+
+                {/* Payment Options Section - Only shown in step 2 */}
+                {step === 'method' && (
+                    <div className="mt-8">
+                        <h3 className="payment-methods-header">Payment Option</h3>
+
+                        <div className="payment-options-grid">
+                            {['paytm', 'upi', 'phonepe', 'card'].map(method => (
+                                <div
+                                    key={method}
+                                    className={`payment-option ${selectedMethod === method ? 'selected' : ''}`}
+                                    onClick={() => setSelectedMethod(method)}
+                                >
+                                    <span className="capitalize">{method}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="qr-section">
+                            <div className="qr-code flex items-center justify-center border text-xs text-gray-400">
+                                QR Code
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Right Side: Payment/Bill */}
@@ -91,53 +118,15 @@ export default function PaymentPage() {
                     </tbody>
                 </table>
 
+                {/* Action Buttons */}
                 {step === 'summary' ? (
                     <div className="payment-actions">
                         <button className="btn-cancel" onClick={() => router.back()}>Cancel Order</button>
                         <button className="btn-proceed" onClick={handleProceed}>Proceed Payment</button>
                     </div>
                 ) : (
-                    <div className="payment-methods-section">
-                        <h3 className="payment-methods-header">Payment Option</h3>
-
-                        <div className="payment-options-grid">
-                            <div
-                                className={`payment-option ${selectedMethod === 'paytm' ? 'selected' : ''}`}
-                                onClick={() => setSelectedMethod('paytm')}
-                            >
-                                <span>Paytm</span>
-                            </div>
-                            <div
-                                className={`payment-option ${selectedMethod === 'upi' ? 'selected' : ''}`}
-                                onClick={() => setSelectedMethod('upi')}
-                            >
-                                <span>UPI</span>
-                            </div>
-                            <div
-                                className={`payment-option ${selectedMethod === 'phonepe' ? 'selected' : ''}`}
-                                onClick={() => setSelectedMethod('phonepe')}
-                            >
-                                <span>PhonePe</span>
-                            </div>
-                            <div
-                                className={`payment-option ${selectedMethod === 'card' ? 'selected' : ''}`}
-                                onClick={() => setSelectedMethod('card')}
-                            >
-                                <span>Card</span>
-                            </div>
-                        </div>
-
-                        <div className="qr-section">
-                            {/* Mock QR Code */}
-                            <div className="qr-code flex items-center justify-center border text-xs text-gray-400">
-                                QR Code
-                            </div>
-                        </div>
-
-                        <div className="payment-actions">
-                            <button className="btn-cancel" onClick={() => setStep('summary')}>Back</button>
-                            <button className="btn-proceed" onClick={handleConfirm}>Confirm Payment</button>
-                        </div>
+                    <div className="payment-actions">
+                        <button className="btn-proceed w-full" onClick={handleConfirm}>Confirm Payment</button>
                     </div>
                 )}
             </div>

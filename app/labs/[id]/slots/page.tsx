@@ -65,8 +65,13 @@ export default function LabSlotsPage() {
                     />
                     <div className="lab-banner-details">
                         <h2>{lab.name}</h2>
-                        <p>Blood Test | Stool Test | Urine Test <br /> KIDNEY PANEL; KFT</p>
-                        <p>GLUCOSE, FASTING (F) | VITAMIN D <br /> 25 - HYDROXY</p>
+                        <p className="text-sm opacity-90">{lab.address}</p>
+                        <p className="text-sm opacity-90">{lab.location}</p>
+                        <div className="mt-2">
+                            <span className="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">
+                                {lab.rating} ★
+                            </span>
+                        </div>
                     </div>
                 </div>
 

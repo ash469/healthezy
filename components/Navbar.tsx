@@ -12,7 +12,7 @@ export default function Navbar() {
     { title: 'Doctors', href: '/doctors' },
     { title: 'Labs', href: '/labs' },
     { title: 'Hospitals', href: '/stores' },
-    { title: 'Pharmacy', href: '/stores' },
+    { title: 'Pharmacy', href: '/pharmacy' },
     { title: 'Sustain Health', href: '/shop' },
   ];
 

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image from 'next/image';
-import '@/components/doctors/Payment.css'; 
+import '@/components/doctors/Payment.css';
 import { getLabById } from '@/data/labs';
 
 export default function LabPaymentPage() {
@@ -42,7 +42,9 @@ export default function LabPaymentPage() {
 
     return (
         <div className="payment-container">
+            {/* Left Section: Lab Card + Selected Tests + Payment Options */}
             <div className="payment-left-section">
+                {/* Lab Card */}
                 <div className="payment-doctor-card">
                     <div className="payment-doctor-image">
                         <Image
@@ -60,17 +62,42 @@ export default function LabPaymentPage() {
                 </div>
 
                 {/* List Selected Tests */}
-                <div style={{ marginTop: '1.5rem', borderTop: '1px solid #eee', paddingTop: '1rem' }}>
-                    <h4 style={{ fontWeight: 'bold', marginBottom: '0.5rem', color: '#333' }}>Selected Tests</h4>
-                    <ul style={{ listStyle: 'none', padding: 0 }}>
+                <div className="mt-6 border-t border-gray-200 pt-4">
+                    <h4 className="font-bold mb-2 text-gray-800">Selected Tests</h4>
+                    <ul className="list-none p-0">
                         {selectedTests.map(test => (
-                            <li key={test.id} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem', color: '#555' }}>
+                            <li key={test.id} className="flex justify-between mb-2 text-gray-600">
                                 <span>{test.name}</span>
-                                <span style={{ fontWeight: 'bold' }}>₹{test.price}</span>
+                                <span className="font-bold">₹{test.price}</span>
                             </li>
                         ))}
                     </ul>
                 </div>
+
+                {/* Payment Options Section - Only shown in step 2 */}
+                {step === 'method' && (
+                    <div className="mt-8">
+                        <h3 className="payment-methods-header">Payment Option</h3>
+
+                        <div className="payment-options-grid">
+                            {['paytm', 'upi', 'phonepe', 'card'].map(method => (
+                                <div
+                                    key={method}
+                                    className={`payment-option ${selectedMethod === method ? 'selected' : ''}`}
+                                    onClick={() => setSelectedMethod(method)}
+                                >
+                                    <span className="capitalize">{method}</span>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="qr-section">
+                            <div className="qr-code flex items-center justify-center border text-xs text-gray-400">
+                                QR Code
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Right Side: Payment/Bill */}
@@ -92,37 +119,15 @@ export default function LabPaymentPage() {
                     </tbody>
                 </table>
 
+                {/* Action Buttons */}
                 {step === 'summary' ? (
                     <div className="payment-actions">
                         <button className="btn-cancel" onClick={() => router.back()}>Cancel Order</button>
                         <button className="btn-proceed" onClick={handleProceed}>Proceed Payment</button>
                     </div>
                 ) : (
-                    <div className="payment-methods-section">
-                        <h3 className="payment-methods-header">Payment Option</h3>
-
-                        <div className="payment-options-grid">
-                            {['paytm', 'upi', 'phonepe', 'card'].map(method => (
-                                <div
-                                    key={method}
-                                    className={`payment-option ${selectedMethod === method ? 'selected' : ''}`}
-                                    onClick={() => setSelectedMethod(method)}
-                                >
-                                    <span style={{ textTransform: 'capitalize' }}>{method}</span>
-                                </div>
-                            ))}
-                        </div>
-
-                        <div className="qr-section">
-                            <div className="qr-code flex items-center justify-center border text-xs text-gray-400">
-                                QR Code
-                            </div>
-                        </div>
-
-                        <div className="payment-actions">
-                            <button className="btn-cancel" onClick={() => setStep('summary')}>Back</button>
-                            <button className="btn-proceed" onClick={handleConfirm}>Confirm Payment</button>
-                        </div>
+                    <div className="payment-actions">
+                        <button className="btn-proceed w-full" onClick={handleConfirm}>Confirm Payment</button>
                     </div>
                 )}
             </div>

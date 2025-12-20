@@ -24,8 +24,7 @@
     display: flex;
     gap: 1.5rem;
     color: white;
-    max-width: 500px;
-    /* Limit width as per image */
+    max-width: 500px; /* Limit width as per image */
 }
 
 .lab-banner-img {
@@ -74,8 +73,7 @@
 .slot-picker-container {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    /* Align buttons to bottom right */
+    align-items: flex-end; /* Align buttons to bottom right */
 }
 
 .slot-left-pane {
@@ -154,8 +152,7 @@
     border: 1px solid #ff5252;
     color: #ff5252;
     background: white;
-    border-radius: 4px;
-    /* Slightly rounded */
+    border-radius: 4px; /* Slightly rounded */
     font-weight: 700;
     cursor: pointer;
 }
@@ -181,24 +178,19 @@
         flex-direction: column;
         gap: 1.5rem;
     }
-
     .lab-slot-banner {
         width: 100%;
         max-width: none;
     }
-
     .slot-picker-container {
         flex-direction: column;
         gap: 2rem;
     }
-
     .slot-actions {
         width: 100%;
         justify-content: space-between;
     }
-
-    .btn-cancel,
-    .btn-proceed {
+    .btn-cancel, .btn-proceed {
         flex: 1;
         text-align: center;
     }
