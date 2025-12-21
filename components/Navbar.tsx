@@ -11,7 +11,7 @@ export default function Navbar() {
   const navLinks = [
     { title: 'Doctors', href: '/doctors' },
     { title: 'Labs', href: '/labs' },
-    { title: 'Hospitals', href: '/stores' },
+    { title: 'Hospitals', href: '/hospital' },
     { title: 'Pharmacy', href: '/pharmacy' },
     { title: 'Sustain Health', href: '/shop' },
   ];

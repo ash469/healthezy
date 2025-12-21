@@ -1,13 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams, useParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { Document, Page, Text, View, StyleSheet, Image as PDFImage, pdf } from '@react-pdf/renderer';
-import { getPharmacyById } from '@/data/pharmacy';
+import { getProductById } from '@/data/shop';
 import '@/components/doctors/Confirmation.css';
 
-// PDF Styles
+// PDF Styles - Identical to Pharmacy PDF Styles
 const styles = StyleSheet.create({
     page: { flexDirection: 'column', backgroundColor: '#ffffff', padding: 40, alignItems: 'center', fontFamily: 'Helvetica' },
     watermark: { position: 'absolute', top: 300, left: 50, fontSize: 80, color: '#0e8a93', fontWeight: 'extrabold', opacity: 0.1, transform: 'rotate(-45deg)' },
@@ -23,14 +23,13 @@ const styles = StyleSheet.create({
     footer: { position: 'absolute', bottom: 30, fontSize: 10, color: '#aaaaaa' },
 });
 
-const PharmacyPDF = ({ data }: { data: any }) => (
+const ShopPDF = ({ data }: { data: any }) => (
     <Document>
         <Page size="A4" style={styles.page}>
             <Text style={styles.watermark}>Healthezy</Text>
             <View style={styles.headerBox}>
-                <PDFImage src={data.pharmacy.imageUrl} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} />
-                <Text style={styles.storeName}>{data.pharmacy.name}</Text>
-                <Text style={styles.storeAddress}>{data.pharmacy.address}</Text>
+                <Text style={styles.storeName}>Healthezy Shop</Text>
+                <Text style={styles.storeAddress}>Sustainable Healthcare Products</Text>
             </View>
 
             <View style={styles.divider} />
@@ -38,13 +37,13 @@ const PharmacyPDF = ({ data }: { data: any }) => (
             <Text style={styles.sectionTitle}>Order Summary</Text>
             <View style={styles.row}>
                 <Text style={styles.label}>Order For:</Text>
-                <Text style={styles.value}>Medicines</Text>
+                <Text style={styles.value}>Healthcare Products</Text>
             </View>
             <Text style={styles.total}>Total Paid: Rs. {data.amount}</Text>
 
             <View style={styles.divider} />
             <Text style={styles.sectionTitle}>Customer Details</Text>
-            <View style={styles.row}><Text style={styles.label}>Patient:</Text><Text style={styles.value}>{data.patient}</Text></View>
+            <View style={styles.row}><Text style={styles.label}>Customer:</Text><Text style={styles.value}>{data.patient}</Text></View>
             <View style={styles.row}><Text style={styles.label}>Date:</Text><Text style={styles.value}>{data.date}</Text></View>
 
             <Text style={styles.footer}>Ordered via Healthezy</Text>
@@ -52,46 +51,37 @@ const PharmacyPDF = ({ data }: { data: any }) => (
     </Document>
 );
 
-export default function PharmacyConfirmationPage() {
+export default function ShopConfirmationPage() {
     const [isClient, setIsClient] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
-    const params = useParams();
     const searchParams = useSearchParams();
     const router = useRouter();
 
-    const id = params?.id as string;
     const itemsParam = searchParams.get('items') || '';
     const amount = searchParams.get('amount') || '0';
     const date = searchParams.get('date') || new Date().toLocaleDateString();
 
-    const pharmacy = getPharmacyById(id);
-
     // Parse items for breakdown
     const cartItems = itemsParam.split(',').filter(Boolean).map(item => {
-        const [medId, qtyStr] = item.split(':');
-        return { medId, qty: parseInt(qtyStr, 10) };
+        const [prodId, qtyStr] = item.split(':');
+        return { prodId, qty: parseInt(qtyStr, 10) };
     });
 
-    const selectedMedicines = cartItems.map(item => {
-        const med = pharmacy?.availableMedicines.find(m => m.id === item.medId);
-        if (!med) return null;
+    const selectedProducts = cartItems.map(item => {
+        const prod = getProductById(item.prodId);
+        if (!prod) return null;
         return {
-            ...med,
+            ...prod,
             qty: item.qty,
-            totalPrice: med.price * item.qty
+            totalPrice: prod.price * item.qty
         };
-    }).filter(m => m !== null) as any[];
-
-    const discountAmount = 0.00;
+    }).filter(p => p !== null) as any[];
 
     useEffect(() => { setIsClient(true); }, []);
 
-    if (!pharmacy) return <div>Pharmacy not found</div>;
-
     const bookingDetails = {
-        pharmacy: pharmacy,
         amount: amount,
-        patient: 'Mr. Rahul Mishra',
+        patient: 'Mr. User Name', // Placeholder
         date: date,
     };
 
@@ -99,11 +89,11 @@ export default function PharmacyConfirmationPage() {
         if (isGenerating) return;
         setIsGenerating(true);
         try {
-            const blob = await pdf(<PharmacyPDF data={bookingDetails} />).toBlob();
+            const blob = await pdf(<ShopPDF data={bookingDetails} />).toBlob();
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'Healthezy-pharmacy-order.pdf';
+            link.download = 'Healthezy-shop-order.pdf';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -122,15 +112,15 @@ export default function PharmacyConfirmationPage() {
                 <div className="confirmation-doctor-section">
                     <div className="conf-doc-img">
                         <Image
-                            src={pharmacy.imageUrl}
-                            alt={pharmacy.name}
+                            src={selectedProducts[0]?.imageUrl || '/product.png'}
+                            alt="Shop"
                             width={130}
                             height={130}
                         />
                     </div>
-                    <h3>{pharmacy.name}</h3>
-                    <p>{pharmacy.address}</p>
-                    <p>{pharmacy.location}</p>
+                    <h3>Healthezy Shop</h3>
+                    <p>Sustainable Healthcare</p>
+                    <p>India</p>
                 </div>
 
                 <div className="confirmation-details-section">
@@ -139,12 +129,12 @@ export default function PharmacyConfirmationPage() {
 
                     <div className="booking-info">
                         <p>{bookingDetails.date}</p>
-                        <p>Medicines Ordered</p>
+                        <p>Products Ordered</p>
                     </div>
 
                     <div className="mt-4 mb-6 w-full">
                         <h4 className="font-bold mb-2 text-gray-700">Items:</h4>
-                        {selectedMedicines.map((item: any) => (
+                        {selectedProducts.map((item: any) => (
                             <div key={item.id} className="flex justify-between text-sm text-gray-600 mb-1">
                                 <span>• {item.name} (x{item.qty})</span>
                                 <span className="font-semibold">₹{item.totalPrice.toFixed(2)}</span>
@@ -166,9 +156,9 @@ export default function PharmacyConfirmationPage() {
                         </button>
                         <button
                             className="download-btn"
-                            onClick={() => router.push('/')}
+                            onClick={() => router.push('/shop')}
                         >
-                            Track Order
+                            Continue Shopping
                         </button>
                     </div>
                 </div>

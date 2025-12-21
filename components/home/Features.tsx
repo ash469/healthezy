@@ -42,7 +42,7 @@ const Features = () => {
                                 className="object-contain"
                             />
                         </div>
-                       
+
                         <h3 className="text-m md:text-xl font-bold text-gray-800 mb-2 min-h-[2.5rem] md:min-h-[3.5rem] flex items-end justify-center w-full leading-tight">
                             {feature.title}
                         </h3>

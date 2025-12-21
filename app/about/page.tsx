@@ -25,7 +25,7 @@ const AboutPage = () => {
                     <div className="about-image">
                         <img
                             src="/why_choose_us.png"
-                            alt="Why Choose HealthEzy"
+                            alt="Why Choose Healthezy"
                         />
                     </div>
                     <div className="about-content">

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import { Document, Page, Text, View, StyleSheet, Image as PDFImage, pdf } from '@react-pdf/renderer';
 import '@/components/doctors/Confirmation.css';
-import { getDoctorById } from '@/data/doctors';
+import { getHospitalById, getDoctorByIds } from '@/data/hospitals';
 
 // --- PDF Styles and Document Definition ---
 const styles = StyleSheet.create({
@@ -96,16 +96,24 @@ const AppointmentPDF = ({ data }: { data: any }) => (
             <Text style={styles.watermark}>Healthezy</Text>
 
             <View style={styles.imageContainer}>
-                <PDFImage src={data.doctor.imageUrl} />
+                {/* PDFImage can conflict with next/image on import if not careful, handled by alias */}
+                {/* Hospital or Doctor Image? Logic: Show Hospital Image as context, or Doctor? 
+                    User asked to replace doctor card with hospital card on pages. 
+                    For PDF confirmation, usually doctor is important, but consistent with on-screen change: Hospital.
+                */}
+                <PDFImage src={data.hospital.imageUrl} />
             </View>
 
-            <Text style={styles.doctorName}>{data.doctor.name}</Text>
-            <Text style={styles.doctorSpecialty}>{data.doctor.specialty}</Text>
-            <Text style={styles.doctorId}>{data.doctor.hospital}</Text>
+            <Text style={styles.doctorName}>{data.hospital.name}</Text>
+            <Text style={styles.doctorSpecialty}>{data.hospital.address}</Text>
+            <Text style={styles.doctorId}>Rating: {data.hospital.rating}</Text>
 
             <View style={styles.divider} />
 
             <Text style={styles.sectionTitle}>Appointment Details</Text>
+
+            <Text style={styles.label}>Doctor:</Text>
+            <Text style={[styles.value, { fontWeight: 'bold' }]}>{data.doctorName}</Text>
 
             <Text style={styles.label}>Patient:</Text>
             <Text style={[styles.value, { fontWeight: 'bold' }]}>{data.patient}</Text>
@@ -118,17 +126,19 @@ const AppointmentPDF = ({ data }: { data: any }) => (
     </Document>
 );
 
-export default function BookingConfirmationPage() {
+export default function HospitalBookingConfirmationPage() {
     const [isClient, setIsClient] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
 
-    const doctorId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const doctor = getDoctorById(doctorId);
+    const hospitalId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const doctorId = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
 
-    // In a real app, date/slot would come from searchParams or global state
+    const hospital = getHospitalById(hospitalId);
+    const doctor = getDoctorByIds(hospitalId, doctorId);
+
     const date = searchParams.get('date') || '25 Nov 2025 | Tuesday';
     const slot = searchParams.get('slot') || '10:00';
 
@@ -136,26 +146,17 @@ export default function BookingConfirmationPage() {
         setIsClient(true);
     }, []);
 
-    if (!doctor) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[400px]">
-                <h2 className="text-xl font-bold text-gray-800 mb-2">Doctor Not Found</h2>
-                <button
-                    onClick={() => router.push('/doctors')}
-                    className="bg-[#0e8a93] text-white px-6 py-2 rounded-lg mt-4"
-                >
-                    Back to Doctors
-                </button>
-            </div>
-        );
+    if (!hospital || !doctor) {
+        return <div>Hospital or Doctor not found</div>;
     }
 
     const bookingDetails = {
-        doctor: doctor,
-        patient: 'Mr. Rahul Mishra', // Mock patient
+        hospital: hospital,
+        doctorName: doctor.name,
+        patient: 'Mr. Rahul Mishra',
         date: date,
         time: slot,
-        slot: 'Confirmed Slot' // Generic label or derive based on time
+        slot: 'Confirmed Slot'
     };
 
     const handleDownload = async () => {
@@ -166,7 +167,7 @@ export default function BookingConfirmationPage() {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'Healthezy-appointment.pdf';
+            link.download = 'Healthezy-hospital-appointment.pdf';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -185,15 +186,16 @@ export default function BookingConfirmationPage() {
                 <div className="confirmation-doctor-section">
                     <div className="conf-doc-img">
                         <Image
-                            src={doctor.imageUrl}
-                            alt={doctor.name}
+                            src={hospital.imageUrl}
+                            alt={hospital.name}
                             width={130}
                             height={130}
                         />
                     </div>
-                    <h3>{doctor.name}</h3>
-                    <p>{doctor.specialty}</p>
-                    <p>{doctor.hospital}</p>
+                    {/* Displaying Hospital details here based on request */}
+                    <h3>{hospital.name}</h3>
+                    <p>{hospital.address}</p>
+                    <p className="text-sm mt-2 font-semibold text-[#0e5c63]">Doctor: {doctor.name}</p>
                 </div>
 
                 <div className="confirmation-details-section">
@@ -216,6 +218,12 @@ export default function BookingConfirmationPage() {
                             style={{ opacity: isGenerating ? 0.7 : 1, cursor: isGenerating ? 'not-allowed' : 'pointer' }}
                         >
                             {isGenerating ? 'Generating...' : 'Download PDF'}
+                        </button>
+                        <button
+                            className="bg-gray-100 text-gray-700 px-6 py-2 rounded-lg font-semibold hover:bg-gray-200 transition-colors"
+                            onClick={() => router.push('/')}
+                        >
+                            Home
                         </button>
                     </div>
                 </div>

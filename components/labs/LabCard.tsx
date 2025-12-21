@@ -43,30 +43,18 @@ export default function LabCard({ lab }: LabCardProps) {
                 </div>
             </div>
 
-            <div style={{ position: 'absolute', bottom: '1.5rem', right: '1.5rem', display: 'flex', flexDirection: 'row', gap: '0.75rem', alignItems: 'center' }}>
+            <div className="pharmacy-card-actions">
                 <a
                     href={`https://www.google.com/maps?q=${lab.latitude},${lab.longitude}`}
                     target="_blank"
                     rel="noreferrer"
-                    className="book-btn"
-                    style={{
-                        backgroundColor: 'white',
-                        color: '#00ccde',
-                        border: '1px solid #00ccde',
-                        textDecoration: 'none',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        position: 'static',
-                        margin: 0
-                    }}
+                    className="action-btn-outline"
                 >
                     Get Direction
                 </a>
                 <Link
                     href={`/labs/${lab.id}/book`}
-                    className="book-btn"
-                    style={{ position: 'static', margin: 0 }}
+                    className="action-btn"
                 >
                     Book Test
                 </Link>

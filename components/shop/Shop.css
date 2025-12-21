@@ -1,0 +1,277 @@
+.shop-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 40px;
+    font-family: 'Inter', sans-serif;
+}
+
+/* Header */
+.shop-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-top: 20px;
+}
+
+.shop-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #0e5c63;
+}
+
+.shop-actions-top {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.filters-wrapper {
+    display: flex;
+    gap: 20px;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.filter-label {
+    font-size: 0.85rem;
+    color: #888;
+}
+
+.filter-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #f1f1f1;
+    min-width: 120px;
+    outline: none;
+    color: #555;
+    font-size: 0.9rem;
+}
+
+.cart-icon-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.cart-count {
+    position: absolute;
+    top: -5px;
+    right: -8px;
+    background: #0e5c63;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Grid */
+.shop-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 40px;
+}
+
+/* Card */
+.product-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    /* transition: transform 0.2s; */
+}
+
+/* .product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+} */
+
+.product-image-area {
+    width: 100%;
+    height: 200px;
+    /* Adjust based on image ratio */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.product-img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.product-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.product-price {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #000;
+}
+
+.product-desc {
+    text-align: left;
+    font-size: 0.8rem;
+    color: #666;
+    line-height: 1.4;
+    margin-bottom: 20px;
+    min-height: 45px;
+    /* Ensure alignment */
+}
+
+.product-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-add-cart,
+.btn-view {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-add-cart {
+    background: #0e5c63;
+    color: white;
+}
+
+.btn-add-cart:hover {
+    background: #0b4a50;
+}
+
+.btn-view {
+    background: #00bcd4;
+    /* Cyan */
+    color: white;
+}
+
+.btn-view:hover {
+    background: #00acc1;
+}
+
+
+/* Payment Page Specifics */
+.payment-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    margin-top: 40px;
+}
+
+/* Reusing similar layout to doctor payment but specific style */
+.product-summary-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.payment-product-image {
+    width: 200px;
+    height: 200px;
+}
+
+.product-summary-info {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+/* Bill Section */
+.bill-section {
+    padding-top: 40px;
+}
+
+.bill-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 0.95rem;
+    color: #444;
+}
+
+.bill-total {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: 40px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #000;
+}
+
+.payment-action-buttons {
+    display: flex;
+    gap: 20px;
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #ff5252;
+    background: white;
+    color: #ff5252;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-proceed-pay {
+    flex: 1;
+    padding: 12px;
+    background: #0e8a93;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* Responsive */
+@media(max-width: 768px) {
+    .shop-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .shop-actions-top {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .payment-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+}

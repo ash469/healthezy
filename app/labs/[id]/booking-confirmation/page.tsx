@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
 const LabPDF = ({ data }: { data: any }) => (
     <Document>
         <Page size="A4" style={styles.page}>
-            <Text style={styles.watermark}>HEALTHEZY</Text>
+            <Text style={styles.watermark}>Healthezy</Text>
             <View style={styles.headerBox}>
                 <PDFImage src={data.lab.imageUrl} style={{ width: 80, height: 80, borderRadius: 40, marginBottom: 10 }} />
                 <Text style={styles.labName}>{data.lab.name}</Text>
@@ -92,7 +92,7 @@ export default function LabConfirmationPage() {
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
-            link.download = 'healthezy-lab-appointment.pdf';
+            link.download = 'Healthezy-lab-appointment.pdf';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
