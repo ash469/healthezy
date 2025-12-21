@@ -1,5 +1,16 @@
 import React from 'react';
+import { Metadata } from 'next';
 import './about.css';
+import { pageMetadata, siteConfig } from '@/lib/seo-config';
+
+export const metadata: Metadata = {
+    title: pageMetadata.about.title,
+    description: pageMetadata.about.description,
+    keywords: pageMetadata.about.keywords,
+    alternates: {
+        canonical: `${siteConfig.url}/about`
+    }
+};
 
 
 const AboutPage = () => {
