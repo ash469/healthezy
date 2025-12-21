@@ -1,32 +1,22 @@
 'use client';
 
 import { Product } from '@/data/shop';
-import { useCart } from '@/context/CartContext';
+
 import Image from 'next/image';
 import Link from 'next/link';
 
 interface ProductCardProps {
     product: Product;
+    qty: number;
+    onQuantityChange: (newQty: number) => void;
+    onView: () => void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
-    const { addToCart, cartItems, updateQty } = useCart();
-    const cartItem = cartItems.find(item => item.id === product.id);
-
-    const handleAddToCart = () => {
-        addToCart({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            qty: 1,
-            imageUrl: product.imageUrl,
-            type: 'product'
-        });
-    };
+export default function ProductCard({ product, qty, onQuantityChange, onView }: ProductCardProps) {
 
     return (
         <div className="product-card">
-            <div className="product-image-area">
+            <div className="product-image-area" onClick={onView} style={{ cursor: 'pointer' }}>
                 <Image
                     src={product.imageUrl}
                     alt={product.name}
@@ -42,20 +32,20 @@ export default function ProductCard({ product }: ProductCardProps) {
             </div>
             <p className="product-desc">{product.description}</p>
             <div className="product-actions">
-                {cartItem ? (
+                {qty > 0 ? (
                     <div className="qty-control" style={{ display: 'flex', alignItems: 'center', gap: '10px', flex: 1, justifyContent: 'center' }}>
-                        <button className="qty-btn" onClick={() => updateQty(product.id, cartItem.qty - 1)}>-</button>
-                        <span className="qty-val">{cartItem.qty}</span>
-                        <button className="qty-btn" onClick={() => updateQty(product.id, cartItem.qty + 1)}>+</button>
+                        <button className="qty-btn" onClick={() => onQuantityChange(qty - 1)}>-</button>
+                        <span className="qty-val">{qty}</span>
+                        <button className="qty-btn" onClick={() => onQuantityChange(qty + 1)}>+</button>
                     </div>
                 ) : (
-                    <button className="btn-add-cart" onClick={handleAddToCart}>
+                    <button className="btn-add-cart" onClick={() => onQuantityChange(1)}>
                         Add To Cart
                     </button>
                 )}
-                <Link href={`/shop/${product.id}`} className="btn-view" style={{ textAlign: 'center', textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div onClick={onView} className="btn-view" style={{ textAlign: 'center', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                     View Product
-                </Link>
+                </div>
             </div>
         </div>
     );

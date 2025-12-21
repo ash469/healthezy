@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { Document, Page, Text, View, StyleSheet, Image as PDFImage, pdf } from '@react-pdf/renderer';
@@ -51,7 +51,7 @@ const ShopPDF = ({ data }: { data: any }) => (
     </Document>
 );
 
-export default function ShopConfirmationPage() {
+function ShopConfirmationContent() {
     const [isClient, setIsClient] = useState(false);
     const [isGenerating, setIsGenerating] = useState(false);
     const searchParams = useSearchParams();
@@ -164,5 +164,13 @@ export default function ShopConfirmationPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function ShopConfirmationPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ShopConfirmationContent />
+        </Suspense>
     );
 }

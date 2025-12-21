@@ -1,16 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { getProductById } from '@/data/shop';
 import '@/components/doctors/Payment.css';
-import { useCart } from '@/context/CartContext';
 
-export default function ShopPaymentPage() {
+function ShopPaymentContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { clearCart } = useCart();
 
     const itemsParam = searchParams.get('items') || '';
 
@@ -43,7 +41,7 @@ export default function ShopPaymentPage() {
     };
 
     const handleConfirm = () => {
-        clearCart();
+        // No global cart to clear as we are using local state/url params
         // Pass necessary data to confirmation page
         router.push(`/shop/confirmation?items=${itemsParam}&amount=${totalAmount.toFixed(2)}&date=${new Date().toLocaleDateString()}`);
     };
@@ -154,5 +152,13 @@ export default function ShopPaymentPage() {
                 )}
             </div>
         </div>
+    );
+}
+
+export default function ShopPaymentPage() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <ShopPaymentContent />
+        </Suspense>
     );
 }
