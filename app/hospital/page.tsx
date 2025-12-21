@@ -8,11 +8,8 @@ import { hospitals } from '@/data/hospitals';
 export default function HospitalPage() {
     const [sortBy, setSortBy] = useState('Sort by');
 
-    // Sorting Logic - assuming hospitals have price/rating, if not just rating
     const sortedHospitals = [...hospitals].sort((a, b) => {
         if (sortBy === 'Rating') return b.rating - a.rating;
-        // Logic for price sorting if simplified price exists, 
-        // for now labs logic is maintained but adapted
         return 0;
     });
 

@@ -26,15 +26,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: route === '' ? 1.0 : 0.8,
     }));
 
-    // You can add dynamic routes here
-    // For example, individual doctor pages, blog posts, etc.
-    // const doctors = await getDoctors();
-    // const doctorPages = doctors.map((doctor) => ({
-    //   url: `${baseUrl}/doctors/${doctor.id}`,
-    //   lastModified: doctor.updatedAt,
-    //   changeFrequency: 'monthly',
-    //   priority: 0.6,
-    // }));
-
     return [...staticPages];
 }

@@ -3,7 +3,7 @@ export interface Test {
     name: string;
     price: number;
     description?: string;
-    parametersCovered?: number | string; // e.g. "20 Parameter(s) Covered"
+    parametersCovered?: number | string; 
     homeCollection?: boolean;
     labVisit?: boolean;
 }

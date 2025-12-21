@@ -1,4 +1,3 @@
-/* Main Container */
 .lab-booking-container {
     max-width: 1200px;
     margin: 0 auto;
@@ -6,7 +5,6 @@
     font-family: 'Outfit', sans-serif;
 }
 
-/* Header Section: Banner + Sidebar Actions */
 .lab-header-section {
     display: flex;
     justify-content: space-between;
@@ -15,17 +13,14 @@
     margin-bottom: 2rem;
 }
 
-/* Lab Banner (Teal Box) */
 .lab-banner {
     flex: 1;
     background-color: #008996;
-    /* Teal color from image */
     border-radius: 12px;
     padding: 2rem;
     display: flex;
     gap: 2rem;
     color: white;
-    /* No shadow in the flat design image? keeping subtle just in case */
     box-shadow: 0 4px 12px rgba(0, 137, 150, 0.2);
 }
 
@@ -34,7 +29,6 @@
     height: 100px;
     object-fit: cover;
     border-radius: 4px;
-    /* Image looks squarish with slight radius */
 }
 
 .lab-banner-info {
@@ -58,21 +52,17 @@
     color: #e0f2f1;
 }
 
-/* Header Sidebar (Cart & Filters) */
 .lab-header-sidebar {
     width: 250px;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    /* Align contents to right */
     height: 180px;
-    /* Align roughly with banner height */
 }
 
 .cart-icon-container {
     cursor: pointer;
     margin-bottom: auto;
-    /* Push to top */
 }
 
 .cart-icon {
@@ -81,9 +71,6 @@
     position: relative;
 }
 
-/* Custom Cart Icon logic if using text/emoji, but user image has a specific icon. 
-   We will try to use a unicode or existing icon that looks similar.
-   Image has a cart with a plus sign inside. */
 .cart-plus-badge {
     position: absolute;
     top: 40%;
@@ -125,7 +112,6 @@
     cursor: pointer;
 }
 
-/* Search Bar */
 .search-bar-container {
     margin-bottom: 3rem;
 }
@@ -134,22 +120,16 @@
     display: flex;
     align-items: center;
     background-color: #e0e0e0;
-    /* Light grey from image */
     border-radius: 2rem;
-    /* Fully rounded pill */
     padding: 0.5rem;
-    /* Padding for the container */
     padding-left: 0.5rem;
     width: 100%;
-    /* max-width: 600px; */
-    /* Design shows full width relative to content? */
 }
 
 .search-icon {
     font-size: 1.2rem;
     color: white;
     background-color: #008996;
-    /* Teal circle */
     width: 40px;
     height: 40px;
     border-radius: 50%;
@@ -173,11 +153,9 @@
     color: #bbb;
 }
 
-/* Test Grid */
 .test-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    /* Force 3 columns as per image */
     gap: 2rem;
 }
 
@@ -196,21 +174,17 @@
 
 .test-card {
     background-color: #e0f7fa;
-    /* Light teal background match */
     padding: 2rem;
     border-radius: 4px;
-    /* Sharper corners in image? No, looks standard */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     min-height: 250px;
     position: relative;
-    /* No shadow in image */
 }
 
 .test-title {
     color: #008996 !important;
-    /* Dark teal */
     font-weight: 800;
     font-size: 1rem;
     margin: 0 0 0.5rem 0;
@@ -230,7 +204,6 @@
     font-size: 2.2rem;
     font-weight: 700;
     color: #263238;
-    /* Dark grey/black */
     margin-bottom: 0.5rem;
 }
 
@@ -253,10 +226,8 @@
 .dot-icon {
     font-size: 0.6rem;
     color: #008996;
-    /* Teal star/dot */
 }
 
-/* Custom Radio Dot */
 .radio-dot {
     width: 8px;
     height: 8px;
@@ -303,7 +274,6 @@
     font-size: 0.7rem;
     color: #008996;
     font-weight: bold;
-    /* Italic/Bold in image? Looks normal bold */
     cursor: pointer;
     text-decoration: none;
     display: flex;
@@ -348,16 +318,12 @@
         line-height: 1.2;
     }
 
-    /* Reposition Cart Icon for Mobile */
     .lab-header-sidebar {
         width: 100%;
         height: auto;
         position: static;
-        /* Remove absolute positioning */
         order: 1;
-        /* Place Cart above Banner */
         flex-direction: row;
-        /* Ensure proper alignment */
         justify-content: flex-end;
         align-items: center;
         padding-right: 0.5rem;
@@ -371,7 +337,6 @@
         font-size: 0.6rem;
     }
 
-    /* Search Bar */
     .search-bar-container {
         margin-bottom: 2rem;
     }
@@ -392,7 +357,6 @@
         margin-left: 0.5rem;
     }
 
-    /* Test Grid - Single Column */
     .test-grid {
         grid-template-columns: 1fr;
         gap: 1.5rem;

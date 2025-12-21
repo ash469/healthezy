@@ -96,11 +96,6 @@ const AppointmentPDF = ({ data }: { data: any }) => (
             <Text style={styles.watermark}>Healthezy</Text>
 
             <View style={styles.imageContainer}>
-                {/* PDFImage can conflict with next/image on import if not careful, handled by alias */}
-                {/* Hospital or Doctor Image? Logic: Show Hospital Image as context, or Doctor? 
-                    User asked to replace doctor card with hospital card on pages. 
-                    For PDF confirmation, usually doctor is important, but consistent with on-screen change: Hospital.
-                */}
                 <PDFImage src={data.hospital.imageUrl} />
             </View>
 
@@ -192,7 +187,6 @@ export default function HospitalBookingConfirmationPage() {
                             height={130}
                         />
                     </div>
-                    {/* Displaying Hospital details here based on request */}
                     <h3>{hospital.name}</h3>
                     <p>{hospital.address}</p>
                     <p className="text-sm mt-2 font-semibold text-[#0e5c63]">Doctor: {doctor.name}</p>

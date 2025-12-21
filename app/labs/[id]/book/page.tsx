@@ -131,11 +131,6 @@ export default function LabBookingPage() {
                     );
                 })}
             </div>
-
-            {/* Floating Proceed Button REMOVED as per pixel-perfect request (relying on Cart icon or expectation of implicit cart)
-                However, to be safe, if the user really wants the exact image, there is NO floating button. 
-                But functionality needs a way to proceed. The Cart icon has onClick.
-            */}
         </div>
     );
 }

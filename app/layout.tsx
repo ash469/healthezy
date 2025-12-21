@@ -60,14 +60,6 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage]
   },
 
-  // Verification tags (add your actual verification codes)
-  // verification: {
-  //   google: 'your-google-verification-code',
-  //   yandex: 'your-yandex-verification-code',
-  //   bing: 'your-bing-verification-code'
-  // },
-
-  // Icons
   icons: {
     icon: [
       { url: '/logo.png', sizes: '32x32', type: 'image/png' },
@@ -77,7 +69,6 @@ export const metadata: Metadata = {
     shortcut: '/logo.png'
   },
 
-  // App metadata
   applicationName: siteConfig.name,
   appleWebApp: {
     capable: true,
@@ -85,7 +76,6 @@ export const metadata: Metadata = {
     title: siteConfig.name
   },
 
-  // Robots
   robots: {
     index: true,
     follow: true,
@@ -98,7 +88,6 @@ export const metadata: Metadata = {
     },
   },
 
-  // Other
   category: 'healthcare',
   alternates: {
     canonical: siteConfig.url

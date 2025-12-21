@@ -52,7 +52,7 @@ export default function HospitalDoctorsPage() {
 
     return (
         <div className="doctors-container">
-            {/* Hospital Header Context - Optional, keeping it subtle or consistent with main page */}
+           
             <div className="doctors-header">
                 <h1 className="doctors-title">Doctors at {hospital.name}</h1>
 
@@ -88,16 +88,6 @@ export default function HospitalDoctorsPage() {
             <div className="doctors-list">
                 {sortedDoctors.length > 0 ? (
                     sortedDoctors.map((doctor) => (
-                        // We need to slightly adjust the booking link in DoctorCard or wrap it
-                        // Since DoctorCard links to /doctors/[id]/book by default
-                        // We can either:
-                        // 1. Update DoctorCard to accept a custom link prop
-                        // 2. Or just reuse it and handle the route interception (complex)
-                        // 3. Or create a HospitalDoctorCard wrapper
-                        // FOR NOW: Let's reuse components but we might need a modified card to link to hospital flow
-                        // Checking DoctorCard again... it hardcodes the link. 
-                        // I will create a wrapper/custom card here inline or a new component to match exact design but route correctly.
-                        // Actually, user said "exactly doctor first page", so reusing the look is key.
 
                         <div key={doctor.id} className="doctor-card">
                             <div className="doctor-info-section">

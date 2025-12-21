@@ -18,13 +18,13 @@ const ServiceGrid = () => {
         {
             title: 'Medical Stores',
             image: '/home/store.png',
-            link: '/stores',
+            link: '/pharmacy',
             color: 'bg-emerald-600',
         },
         {
             title: 'Hospitals & Nursing Homes',
             image: '/home/hospital.png',
-            link: '/shop',
+            link: '/hospital',
             color: 'bg-cyan-700',
         },
     ];

@@ -50,9 +50,7 @@ export default function PaymentPage() {
 
     return (
         <div className="payment-container">
-            {/* Left Section: Doctor Card + Payment Options */}
             <div className="payment-left-section">
-                {/* Doctor Card */}
                 <div className="payment-doctor-card">
                     <div className="payment-doctor-image">
                         <Image
@@ -69,7 +67,6 @@ export default function PaymentPage() {
                     </div>
                 </div>
 
-                {/* Payment Options Section - Only shown in step 2 */}
                 {step === 'method' && (
                     <div className="mt-8">
                         <h3 className="payment-methods-header">Payment Option</h3>
@@ -95,7 +92,6 @@ export default function PaymentPage() {
                 )}
             </div>
 
-            {/* Right Side: Payment/Bill */}
             <div className="payment-right-section">
                 <table className="bill-table">
                     <tbody>

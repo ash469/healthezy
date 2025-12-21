@@ -41,8 +41,6 @@ function ShopPaymentContent() {
     };
 
     const handleConfirm = () => {
-        // No global cart to clear as we are using local state/url params
-        // Pass necessary data to confirmation page
         router.push(`/shop/confirmation?items=${itemsParam}&amount=${totalAmount.toFixed(2)}&date=${new Date().toLocaleDateString()}`);
     };
 

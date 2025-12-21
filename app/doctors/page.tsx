@@ -6,9 +6,6 @@ import '@/components/doctors/Doctors.css';
 import { Doctor } from '@/types/doctor';
 import { doctors } from '@/data/doctors';
 
-// Note: Since this is a client component, metadata must be set in a parent layout or route
-// For better SEO, consider moving filter/sort logic to server component
-
 export default function DoctorsPage() {
     const [filterGender, setFilterGender] = useState<string>('Gender');
     const [sortBy, setSortBy] = useState<string>('Sort by');
@@ -20,17 +17,15 @@ export default function DoctorsPage() {
     });
 
     // Sort Logic
-    // Create a copy to avoid mutating the original filtered array in place (though map returns new array, sort mutates)
     const sortedDoctors = [...filteredDoctors].sort((a, b) => {
         if (sortBy === 'Fees: Low to High') {
             return a.price - b.price;
         } else if (sortBy === 'Fees: High to Low') {
             return b.price - a.price;
         } else if (sortBy === 'Experience') {
-            // Parse "10+ Years" -> 10
             const expA = parseInt(a.experience || '0');
             const expB = parseInt(b.experience || '0');
-            return expB - expA; // Descending experience
+            return expB - expA;
         }
         return 0;
     });

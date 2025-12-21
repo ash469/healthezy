@@ -128,7 +128,6 @@ export default function BookingConfirmationPage() {
     const doctorId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
     const doctor = getDoctorById(doctorId);
 
-    // In a real app, date/slot would come from searchParams or global state
     const date = searchParams.get('date') || '25 Nov 2025 | Tuesday';
     const slot = searchParams.get('slot') || '10:00';
 

@@ -138,9 +138,7 @@ export default function Footer() {
 
                 <div className="md:hidden flex flex-col items-center space-y-12 mb-12 w-full">
 
-                    {/* Links Section: Side by Side with Divider */}
                     <div className="grid grid-cols-[1fr_auto_1fr] w-full max-w-sm gap-4">
-                        {/* Browse */}
                         <div>
                             <h3 className="text-lg font-bold mb-4 border-b-2 border-white pb-2 inline-block">
                                 Browse
@@ -154,10 +152,8 @@ export default function Footer() {
                             </ul>
                         </div>
 
-                        {/* Divider */}
                         <div className="w-[2px] bg-white/30 self-stretch mx-2"></div>
 
-                        {/* Quick Links */}
                         <div>
                             <h3 className="text-lg font-bold mb-4 border-b-2 border-white pb-2 inline-block">
                                 Quick Links
@@ -209,7 +205,6 @@ export default function Footer() {
                         </div>
                     </div>
 
-                    {/* Logo & Description Section */}
                     <div className="flex flex-col items-center text-center max-w-xs">
                         <div className="mb-4">
                             <Image src="/footerlogo.png" alt="Logo" width={100} height={100} className="w-24 h-auto" />

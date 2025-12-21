@@ -121,7 +121,6 @@
     align-items: center;
 }
 
-/* Action Buttons Container - Matches Labs/Pharmacy Styles */
 .hospital-card-actions {
     position: absolute;
     bottom: 1.5rem;

@@ -5,7 +5,6 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* Header */
 .shop-header {
     display: flex;
     justify-content: space-between;
@@ -74,31 +73,22 @@
     justify-content: center;
 }
 
-/* Grid */
 .shop-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 40px;
 }
 
-/* Card */
 .product-card {
     background: white;
     border-radius: 12px;
     padding: 20px;
     text-align: center;
-    /* transition: transform 0.2s; */
 }
-
-/* .product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-} */
 
 .product-image-area {
     width: 100%;
     height: 200px;
-    /* Adjust based on image ratio */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -138,7 +128,6 @@
     line-height: 1.4;
     margin-bottom: 20px;
     min-height: 45px;
-    /* Ensure alignment */
 }
 
 .product-actions {
@@ -169,7 +158,6 @@
 
 .btn-view {
     background: #00bcd4;
-    /* Cyan */
     color: white;
 }
 
@@ -178,7 +166,6 @@
 }
 
 
-/* Payment Page Specifics */
 .payment-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -186,7 +173,6 @@
     margin-top: 40px;
 }
 
-/* Reusing similar layout to doctor payment but specific style */
 .product-summary-card {
     display: flex;
     flex-direction: column;
@@ -207,7 +193,6 @@
     padding: 0 10px;
 }
 
-/* Bill Section */
 .bill-section {
     padding-top: 40px;
 }

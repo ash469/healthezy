@@ -51,15 +51,12 @@
     opacity: 0.8;
 }
 
-/* Right Content - Slot Picker */
 .slot-picker-section {
     flex: 1;
     background-color: white;
-    /* background-color: #f9f9f9;  Optional: if we want a card look, but design looks white/clean */
     padding: 1rem;
 }
 
-/* Header Row for Title and Date */
 .slot-header-row {
     display: flex;
     justify-content: space-between;
@@ -74,7 +71,6 @@
     font-weight: 600;
     color: #333;
     margin: 0;
-    /* Remove bottom margin as parent handles it */
 }
 
 .date-navigator {
@@ -89,7 +85,6 @@
     border-radius: 0.5rem;
     width: fit-content;
     margin: 0;
-    /* Remove bottom margin */
 }
 
 .nav-btn {
@@ -126,7 +121,6 @@
     padding: 0.5rem 1rem;
     border: 1px solid #0e8a93;
     border-radius: 2rem;
-    /* Pill shape */
     background-color: white;
     color: #0e8a93;
     font-size: 0.9rem;
@@ -143,7 +137,6 @@
 
 .time-slot.selected {
     background-color: #0e5c63;
-    /* Darker teal for selected */
     color: white;
     border-color: #0e5c63;
 }

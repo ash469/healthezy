@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
-import '@/components/doctors/SlotBooking.css'; // Reusing Doctor's slot booking CSS
+import '@/components/doctors/SlotBooking.css'; 
 import { getHospitalById, getDoctorByIds } from '@/data/hospitals';
 
 const SLOTS = {
@@ -19,10 +19,7 @@ export default function HospitalSlotBookingPage() {
     const doctorId = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
 
     const hospital = getHospitalById(hospitalId);
-    // Even though we show hospital card, we might need doctor context? 
-    // User request: "just you have include that hospital card instead of doctors"
-    // So distinct feature: Summary at top is HOSPITAL, not doctor.
-
+    
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
     const [currentDate, setCurrentDate] = useState(new Date('2025-11-25'));
 
@@ -68,7 +65,6 @@ export default function HospitalSlotBookingPage() {
 
     return (
         <div className="slot-booking-container">
-            {/* Hospital Summary Card - Mimicking usage of HospitalCard style but adapted for summary view */}
             <div className="doctor-summary-card" style={{ flexDirection: 'row', alignItems: 'flex-start', textAlign: 'left', padding: '24px', gap: '24px' }}>
                 <div className="doctor-summary-image" style={{ width: '120px', height: '120px', marginBottom: 0 }}>
                     <Image

@@ -95,13 +95,11 @@
 }
 
 .lab-specialty {
-    /* Used for location/address */
     font-size: 1.1rem;
     opacity: 0.9;
 }
 
 .lab-hospital {
-    /* Used for available tests text or similar */
     font-size: 1.1rem;
     opacity: 0.8;
 }
@@ -121,7 +119,6 @@
     align-items: center;
 }
 
-/* Action Buttons Container - Matches Pharmacy Styles */
 .pharmacy-card-actions {
     position: absolute;
     bottom: 1.5rem;

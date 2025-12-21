@@ -21,7 +21,6 @@ export default function PharmacyPage() {
             <div className="pharmacy-header">
                 <div>
                     <h1 className="pharmacy-title">Pharmacy</h1>
-                    {/* Reuse existing header or navbar logic if needed, but per design this is inside the container */}
                 </div>
 
                 <div className="pharmacy-filters">
