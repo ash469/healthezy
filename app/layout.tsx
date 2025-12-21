@@ -1,15 +1,108 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import RegisterServiceWorker from "@/components/RegisterServiceWorker";
+import { siteConfig, organizationSchema, websiteSchema } from "@/lib/seo-config";
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  preload: true,
+  variable: '--font-inter'
+});
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: '#0e5c63',
+};
 
 export const metadata: Metadata = {
-  title: "Healthezy - Your Trusted Healthcare Platform",
-  description: "Connect with doctors, book lab tests, find medical stores, and shop for health products all in one place.",
+  metadataBase: new URL(siteConfig.url),
+  title: {
+    default: siteConfig.name + " - " + siteConfig.tagline,
+    template: `%s | ${siteConfig.name}`
+  },
+  description: siteConfig.description,
+  keywords: siteConfig.keywords,
+  authors: [{ name: siteConfig.author }],
+  creator: siteConfig.author,
+  publisher: siteConfig.name,
+
+  // Open Graph
+  openGraph: {
+    type: 'website',
+    locale: siteConfig.locale,
+    url: siteConfig.url,
+    title: siteConfig.name + " - " + siteConfig.tagline,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.name + " - Healthcare Platform"
+      }
+    ]
+  },
+
+  // Twitter
+  twitter: {
+    card: 'summary_large_image',
+    title: siteConfig.name + " - " + siteConfig.tagline,
+    description: siteConfig.description,
+    creator: siteConfig.twitterHandle,
+    images: [siteConfig.ogImage]
+  },
+
+  // Verification tags (add your actual verification codes)
+  // verification: {
+  //   google: 'your-google-verification-code',
+  //   yandex: 'your-yandex-verification-code',
+  //   bing: 'your-bing-verification-code'
+  // },
+
+  // Icons
+  icons: {
+    icon: [
+      { url: '/logo.png', sizes: '32x32', type: 'image/png' },
+      { url: '/logo.png', sizes: '16x16', type: 'image/png' }
+    ],
+    apple: '/logo.png',
+    shortcut: '/logo.png'
+  },
+
+  // App metadata
+  applicationName: siteConfig.name,
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: siteConfig.name
+  },
+
+  // Robots
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+
+  // Other
+  category: 'healthcare',
+  alternates: {
+    canonical: siteConfig.url
+  }
 };
 
 export default function RootLayout({
@@ -19,7 +112,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema)
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema)
+          }}
+        />
+      </head>
       <body className={inter.className}>
+        <RegisterServiceWorker />
         <Navbar />
         <main className="min-h-screen pt-20">
           {children}

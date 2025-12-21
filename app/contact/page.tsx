@@ -1,7 +1,15 @@
-export const metadata = {
-    title: "Contact Us",
-    description: "Contact page for Healthezy",
+import { Metadata } from 'next';
+import { pageMetadata, siteConfig } from '@/lib/seo-config';
+
+export const metadata: Metadata = {
+    title: pageMetadata.contact.title,
+    description: pageMetadata.contact.description,
+    keywords: pageMetadata.contact.keywords,
+    alternates: {
+        canonical: `${siteConfig.url}/contact`
+    }
 };
+
 
 export default function ContactPage() {
     return (

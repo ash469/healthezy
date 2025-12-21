@@ -6,9 +6,12 @@ import '@/components/doctors/Doctors.css';
 import { Doctor } from '@/types/doctor';
 import { doctors } from '@/data/doctors';
 
+// Note: Since this is a client component, metadata must be set in a parent layout or route
+// For better SEO, consider moving filter/sort logic to server component
+
 export default function DoctorsPage() {
     const [filterGender, setFilterGender] = useState<string>('Gender');
-    const [sortBy, setSortBy] = useState<string>('Sort by'); 
+    const [sortBy, setSortBy] = useState<string>('Sort by');
 
     // Filter Logic
     const filteredDoctors = doctors.filter(doctor => {

@@ -91,12 +91,12 @@ export default function Footer() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/stores" className="hover:text-gray-200 transition-colors">
+                                <Link href="/hospital" className="hover:text-gray-200 transition-colors">
                                     Hospitals
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/stores" className="hover:text-gray-200 transition-colors">
+                                <Link href="/pharmacy" className="hover:text-gray-200 transition-colors">
                                     Pharmacy
                                 </Link>
                             </li>
