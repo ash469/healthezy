@@ -3,9 +3,16 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
+import { validateUser } from '@/data/users';
 
 const LoginPage = () => {
+    const router = useRouter();
+    const { login } = useAuth();
     const [userType, setUserType] = useState<'patient' | 'provider'>('patient');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     const [formData, setFormData] = useState({
         emailOrPhone: '',
@@ -14,12 +21,57 @@ const LoginPage = () => {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
+        setError(''); // Clear error on input change
     };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(`Logging in as ${userType}:`, formData);
-        // TODO: Add API call here
+        setError('');
+        setIsLoading(true);
+
+        // Validate credentials
+        const user = validateUser(formData.emailOrPhone, formData.password);
+
+        if (!user) {
+            setError('Invalid email/phone or password');
+            setIsLoading(false);
+            return;
+        }
+
+        // Check if user type matches selected tab
+        const isPatient = user.userType === 'patient';
+        const isProvider = ['doctor', 'lab', 'hospital', 'pharmacy', 'ecommerce'].includes(user.userType);
+
+        if (userType === 'patient' && !isPatient) {
+            setError('This account is not a patient account. Please switch to Provider tab.');
+            setIsLoading(false);
+            return;
+        }
+
+        if (userType === 'provider' && !isProvider) {
+            setError('This account is not a provider account. Please switch to Patient tab.');
+            setIsLoading(false);
+            return;
+        }
+
+        // Login successful
+        login(user);
+
+        // Redirect to appropriate dashboard
+        const dashboardRoutes: Record<string, string> = {
+            patient: '/dashboard/patient',
+            doctor: '/dashboard/doctor',
+            lab: '/dashboard/lab',
+            hospital: '/dashboard/hospital',
+            pharmacy: '/dashboard/pharmacy',
+            ecommerce: '/dashboard/ecommerce'
+        };
+
+        const redirectPath = dashboardRoutes[user.userType as keyof typeof dashboardRoutes];
+
+        setTimeout(() => {
+            router.push(redirectPath);
+        }, 500);
     };
 
     return (
@@ -102,13 +154,20 @@ const LoginPage = () => {
                             </Link>
                         </div>
 
+                        {/* Error Message */}
+                        {error && (
+                            <div className="bg-red-500/20 border border-red-500 text-white px-4 py-3 rounded-lg text-sm">
+                                {error}
+                            </div>
+                        )}
 
                         <div className="pt-2 flex flex-col items-center space-y-4">
                             <button
                                 type="submit"
-                                className="bg-[#084248] hover:bg-[#063338] text-white py-3 px-12 rounded-lg font-bold shadow-lg transition-transform hover:scale-105 w-full md:w-auto"
+                                disabled={isLoading}
+                                className="bg-[#084248] hover:bg-[#063338] text-white py-3 px-12 rounded-lg font-bold shadow-lg transition-transform hover:scale-105 w-full md:w-auto disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
                             >
-                                Login
+                                {isLoading ? 'Logging in...' : 'Login'}
                             </button>
                             <p className="text-sm">
                                 Don't have an account?{' '}

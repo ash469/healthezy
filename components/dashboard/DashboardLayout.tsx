@@ -5,7 +5,7 @@ import { ReactNode } from 'react';
 
 interface DashboardLayoutProps {
     children: ReactNode;
-    userType: 'patient' | 'doctor' | 'lab' | 'hospital' | 'store' | 'ecommerce';
+    userType: 'patient' | 'doctor' | 'lab' | 'hospital' | 'pharmacy' | 'ecommerce';
     userName?: string;
 }
 
@@ -50,13 +50,13 @@ const menuItems = {
         { label: 'Departments', href: '/dashboard/hospital/departments', icon: '🏥' },
         { label: 'Analytics', href: '/dashboard/hospital/analytics', icon: '📈' }
     ],
-    store: [
-        { label: 'Dashboard', href: '/dashboard/store', icon: '📊' },
-        { label: 'Orders', href: '/dashboard/store/orders', icon: '📦' },
-        { label: 'Inventory', href: '/dashboard/store/inventory', icon: '📋' },
-        { label: 'Add Product', href: '/dashboard/store/products/new', icon: '➕' },
-        { label: 'Revenue', href: '/dashboard/store/revenue', icon: '💰' },
-        { label: 'Profile', href: '/dashboard/store/profile', icon: '👤' }
+    pharmacy: [
+        { label: 'Dashboard', href: '/dashboard/pharmacy', icon: '📊' },
+        { label: 'Orders', href: '/dashboard/pharmacy/orders', icon: '📦' },
+        { label: 'Prescriptions', href: '/dashboard/pharmacy/prescriptions', icon: '💊' },
+        { label: 'Inventory', href: '/dashboard/pharmacy/inventory', icon: '📋' },
+        { label: 'Revenue', href: '/dashboard/pharmacy/revenue', icon: '💰' },
+        { label: 'Profile', href: '/dashboard/pharmacy/profile', icon: '👤' }
     ]
 };
 

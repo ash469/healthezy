@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RegisterServiceWorker from "@/components/RegisterServiceWorker";
 import { siteConfig, organizationSchema, websiteSchema } from "@/lib/seo-config";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({
   subsets: ['latin'],
@@ -116,12 +117,14 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <RegisterServiceWorker />
-        <Navbar />
-        <main className="min-h-screen pt-20">
-          {children}
-        </main>
-        <Footer />
+        <AuthProvider>
+          <RegisterServiceWorker />
+          <Navbar />
+          <main className="min-h-screen pt-20">
+            {children}
+          </main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import UserMenu from './UserMenu';
 import './Navbar.css';
 
 export default function Navbar() {
@@ -42,18 +43,7 @@ export default function Navbar() {
           </div>
 
           <div className="shrink-0 flex items-center gap-3">
-            <Link
-              href="/login"
-              className="text-[#0f5c62] hover:bg-[#0f5c62] hover:text-white border border-[#0f5c62] px-6 py-2.5 rounded-lg font-medium transition-colors text-sm"
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="bg-[#0f5c62] hover:bg-[#0a454a] text-white px-6 py-2.5 rounded-lg font-medium transition-colors text-sm"
-            >
-              Signup
-            </Link>
+            <UserMenu />
           </div>
         </div>
         <div className="flex md:hidden items-center justify-between w-full">
@@ -92,18 +82,7 @@ export default function Navbar() {
           </Link>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="text-[#0f5c62] hover:bg-[#0f5c62] hover:text-white border border-[#0f5c62] px-3 py-2 rounded-lg font-medium transition-colors text-xs whitespace-nowrap"
-            >
-              Login
-            </Link>
-            <Link
-              href="/signup"
-              className="bg-[#0f5c62] hover:bg-[#0a454a] text-white px-3 py-2 rounded-lg font-medium transition-colors text-xs whitespace-nowrap"
-            >
-              Signup
-            </Link>
+            <UserMenu />
           </div>
 
         </div>
