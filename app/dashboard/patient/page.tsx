@@ -1,121 +1,322 @@
-import DashboardLayout from '@/components/dashboard/DashboardLayout';
+'use client';
+
 import Link from 'next/link';
+import './patient-dashboard.css';
 
 export default function PatientDashboard() {
+    // Mock patient data
+    const patientInfo = {
+        name: "Patient's Name",
+        age: 25,
+        gender: 'M',
+        bloodGroup: 'A+',
+        mobileNo: '98564x1370',
+        emailId: 'xyz@email.com',
+        avatar: '/doctor.png' // Using existing avatar
+    };
+
+    const stats = {
+        patients: 4,
+        appointments: 6,
+        prescriptions: 6,
+        labTests: 2
+    };
+
     const upcomingAppointments = [
-        { id: 1, doctor: "Dr. Sarah Johnson", specialization: "Cardiologist", date: "Dec 20, 2025", time: "10:00 AM", status: "Confirmed" },
-        { id: 2, doctor: "Dr. Michael Chen", specialization: "Pediatrician", date: "Dec 22, 2025", time: "2:30 PM", status: "Pending" }
+        {
+            id: 1,
+            doctor: "Dr. Mehra",
+            specialization: "General Physician",
+            date: "Dec 25, 2025",
+            status: "Confirmed",
+            badge: "bg-teal-500"
+        },
+        {
+            id: 2,
+            doctor: "Dr. Kailash",
+            specialization: "Urologist",
+            date: "Dec 30, 2025",
+            status: "Pending",
+            badge: "bg-orange-500"
+        }
     ];
 
-    const recentLabReports = [
-        { id: 1, test: "Complete Blood Count", lab: "HealthCare Diagnostics", date: "Dec 15, 2025", status: "Available" },
-        { id: 2, test: "Lipid Profile", lab: "PathLab Solutions", date: "Dec 12, 2025", status: "Available" }
+    const labReports = [
+        {
+            id: 1,
+            lab: "PathLabs",
+            test: "Blood Test",
+            date: "Dec 20, 2025",
+            status: "Available",
+            badge: "bg-green-500"
+        },
+        {
+            id: 2,
+            lab: "Sal Labs",
+            test: "Urine Test",
+            date: "Dec 18, 2025",
+            status: "Pending",
+            badge: "bg-yellow-500"
+        }
     ];
 
-    const activePrescriptions = [
-        { id: 1, medicine: "Amoxicillin 500mg", dosage: "3 times daily", duration: "7 days", doctor: "Dr. Sarah Johnson" },
-        { id: 2, medicine: "Vitamin D3", dosage: "Once daily", duration: "30 days", doctor: "Dr. Michael Chen" }
+    const patients = [
+        { id: 1, name: "Rahul Mishra", type: "New Born", nextVisit: "Dec 25, 12", badge: "bg-teal-500" },
+        { id: 2, name: "Prince Mishra", type: "New Born", nextVisit: "Dec 25, 12", badge: "bg-blue-500" }
+    ];
+
+    const recentOrders = [
+        {
+            id: 1,
+            pharmacy: "Apollo Pharma",
+            medicine: "Dolo 650",
+            status: "Delivered",
+            badge: "bg-green-500"
+        },
+        {
+            id: 2,
+            pharmacy: "Wellness Store",
+            medicine: "Vitamin D3",
+            status: "Pending",
+            badge: "bg-orange-500"
+        }
+    ];
+
+    const insuranceClaims = [
+        {
+            hospital: "City Hospital",
+            amount: "Rs. 50k",
+            status: "Under Review",
+            progress: 65
+        }
     ];
 
     return (
-        <DashboardLayout userType="patient" userName="John Doe">
-            <div className="space-y-6">
-                {/* Header */}
-                <div>
-                    <h1 className="text-3xl font-bold mb-2">Dashboard</h1>
-                    <p className="text-gray-600">Manage your health records and appointments</p>
+        <div className="patient-dashboard-wrapper">
+            <div className="patient-dashboard">
+                <div className="dashboard-header">
+                    <h1 className="dashboard-title">Patient Dashboard</h1>
+                    <button className="edit-profile-btn">
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Edit Profile
+                    </button>
                 </div>
 
-                {/* Quick Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-                        <div className="text-3xl mb-2">📅</div>
-                        <div className="text-3xl font-bold mb-1">2</div>
-                        <div className="text-sm opacity-90">Upcoming Appointments</div>
-                    </div>
-                    <div className="card bg-gradient-to-br from-green-500 to-green-600 text-white">
-                        <div className="text-3xl mb-2">🧪</div>
-                        <div className="text-3xl font-bold mb-1">5</div>
-                        <div className="text-sm opacity-90">Lab Reports</div>
-                    </div>
-                    <div className="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-                        <div className="text-3xl mb-2">💊</div>
-                        <div className="text-3xl font-bold mb-1">2</div>
-                        <div className="text-sm opacity-90">Active Prescriptions</div>
-                    </div>
-                    <div className="card bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-                        <div className="text-3xl mb-2">🏥</div>
-                        <div className="text-3xl font-bold mb-1">3</div>
-                        <div className="text-sm opacity-90">Insurance Claims</div>
-                    </div>
-                </div>
+                {/* Main Grid Layout */}
+                <div className="dashboard-grid">
+                    {/* Left Column - Profile Card */}
+                    <div className="profile-section">
+                        <div className="profile-card">
+                            <div className="profile-avatar">
+                                <img src={patientInfo.avatar} alt={patientInfo.name} />
+                            </div>
+                            <h3 className="profile-name">{patientInfo.name}</h3>
+                            <div className="profile-details">
+                                <div className="detail-row">
+                                    <span className="detail-label">Age:</span>
+                                    <span className="detail-value">{patientInfo.age}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Gender:</span>
+                                    <span className="detail-value">{patientInfo.gender}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Blood Group:</span>
+                                    <span className="detail-value">{patientInfo.bloodGroup}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Mobile No:</span>
+                                    <span className="detail-value">{patientInfo.mobileNo}</span>
+                                </div>
+                                <div className="detail-row">
+                                    <span className="detail-label">Email Id:</span>
+                                    <span className="detail-value text-xs break-all">{patientInfo.emailId}</span>
+                                </div>
+                            </div>
+                        </div>
 
-                {/* Upcoming Appointments */}
-                <div className="card">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-2xl font-bold">Upcoming Appointments</h2>
-                        <Link href="/doctors" className="btn btn-primary btn-sm">Book New</Link>
-                    </div>
-                    <div className="space-y-3">
-                        {upcomingAppointments.map((apt) => (
-                            <div key={apt.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                <div className="flex items-center gap-4">
-                                    <div className="text-4xl">👨‍⚕️</div>
+                        {/* Quick Links */}
+                        <div className="quick-links-card">
+                            <h3 className="section-title">Quick Link</h3>
+                            <Link href="/doctors" className="quick-link-btn teal">
+                                Book a Doctor
+                            </Link>
+                            <Link href="/labs" className="quick-link-btn teal">
+                                Lab Examination
+                            </Link>
+                        </div>
+
+                        {/* Blog Section */}
+                        <div className="blog-card">
+                            <h3 className="section-title">Message</h3>
+                            <div className="blog-stats">
+                                <div className="blog-stat">
+                                    <span className="stat-icon">💬</span>
                                     <div>
-                                        <h3 className="font-semibold">{apt.doctor}</h3>
-                                        <p className="text-sm text-gray-600">{apt.specialization}</p>
-                                        <p className="text-sm text-gray-500">{apt.date} at {apt.time}</p>
+                                        <div className="stat-label text-black">Msg</div>
+                                        <div className="stat-value text-black">0</div>
                                     </div>
                                 </div>
-                                <span className={`badge ${apt.status === 'Confirmed' ? 'badge-success' : 'badge-warning'}`}>
-                                    {apt.status}
-                                </span>
                             </div>
-                        ))}
-                    </div>
-                </div>
+                        </div>
 
-                {/* Recent Lab Reports */}
-                <div className="card">
-                    <div className="flex items-center justify-between mb-4">
-                        <h2 className="text-2xl font-bold">Recent Lab Reports</h2>
-                        <Link href="/labs" className="btn btn-primary btn-sm">Book Test</Link>
-                    </div>
-                    <div className="space-y-3">
-                        {recentLabReports.map((report) => (
-                            <div key={report.id} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                <div className="flex items-center gap-4">
-                                    <div className="text-4xl">📄</div>
-                                    <div>
-                                        <h3 className="font-semibold">{report.test}</h3>
-                                        <p className="text-sm text-gray-600">{report.lab}</p>
-                                        <p className="text-sm text-gray-500">{report.date}</p>
+                        {/* Insurance Claims */}
+                        <div className="insurance-card">
+                            <h3 className="section-title">Insurance Claims</h3>
+                            <div className="claims-count">2 Claims</div>
+                            <Link href="#" className="view-all-link">View All</Link>
+
+                            {insuranceClaims.map((claim, idx) => (
+                                <div key={idx} className="claim-item">
+                                    <h4 className="claim-hospital">{claim.hospital}</h4>
+                                    <div className="claim-amount">{claim.amount}</div>
+                                    <div className="claim-status">Status: <span className="status-text">{claim.status}</span></div>
+                                    <div className="claim-progress">
+                                        <div className="progress-bar" style={{ width: `${claim.progress}%` }}></div>
+                                    </div>
+                                    <div className="claim-actions">
+                                        <button className="claim-btn submit">Submit Details</button>
+                                        <button className="claim-btn cancel">Cancel Claim</button>
                                     </div>
                                 </div>
-                                <button className="btn btn-outline btn-sm">Download</button>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
 
-                {/* Active Prescriptions */}
-                <div className="card">
-                    <h2 className="text-2xl font-bold mb-4">Active Prescriptions</h2>
-                    <div className="space-y-3">
-                        {activePrescriptions.map((prescription) => (
-                            <div key={prescription.id} className="p-4 bg-gray-50 rounded-lg">
-                                <div className="flex items-start justify-between mb-2">
-                                    <h3 className="font-semibold text-lg">{prescription.medicine}</h3>
-                                    <Link href="/stores" className="btn btn-success btn-sm">Order Now</Link>
-                                </div>
-                                <p className="text-sm text-gray-600">Dosage: {prescription.dosage}</p>
-                                <p className="text-sm text-gray-600">Duration: {prescription.duration}</p>
-                                <p className="text-sm text-gray-500">Prescribed by: {prescription.doctor}</p>
+                    {/* Right Column - Stats and Content */}
+                    <div className="content-section">
+                        {/* Stats Cards */}
+                        <div className="stats-grid">
+                            <div className="stat-card bg-gradient-to-br from-teal-400 to-teal-500">
+                                <div className="stat-number">{stats.patients}</div>
+                                <div className="stat-label">No. Of Patient</div>
+                                <div className="stat-badge">Active</div>
+                                <Link href="#" className="stat-link">View All</Link>
                             </div>
-                        ))}
+                            <div className="stat-card bg-gradient-to-br from-blue-400 to-blue-500">
+                                <div className="stat-number">{stats.appointments}</div>
+                                <div className="stat-label">No. Of Appointments</div>
+                                <div className="stat-badge">Active</div>
+                                <Link href="#" className="stat-link">View All</Link>
+                            </div>
+                            <div className="stat-card bg-gradient-to-br from-purple-400 to-purple-500">
+                                <div className="stat-number">{stats.prescriptions}</div>
+                                <div className="stat-label">Prescriptions</div>
+                                <Link href="#" className="stat-link">View All</Link>
+                            </div>
+                            <div className="stat-card bg-gradient-to-br from-pink-400 to-pink-500">
+                                <div className="stat-number">{stats.labTests}</div>
+                                <div className="stat-label">Lab Tests</div>
+                                <Link href="#" className="stat-link">View All</Link>
+                            </div>
+                        </div>
+
+                        {/* Two Column Layout for Appointments and Lab Reports */}
+                        <div className="two-column-grid">
+                            {/* Upcoming Appointments */}
+                            <div className="content-card">
+                                <div className="card-header">
+                                    <h2 className="card-title">Upcoming Appointments</h2>
+                                    <Link href="#" className="view-all-link">View All</Link>
+                                </div>
+                                <div className="appointments-list">
+                                    {upcomingAppointments.map((apt) => (
+                                        <div key={apt.id} className="appointment-item">
+                                            <h3 className="appointment-doctor">{apt.doctor}</h3>
+                                            <p className="appointment-date">{apt.date}</p>
+                                            <span className={`appointment-badge ${apt.badge}`}>{apt.status}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Lab Test Reports */}
+                            <div className="content-card">
+                                <div className="card-header">
+                                    <h2 className="card-title">Lab Test Reports</h2>
+                                    <Link href="#" className="view-all-link">View All</Link>
+                                </div>
+                                <div className="lab-reports-list">
+                                    {labReports.map((report) => (
+                                        <div key={report.id} className="lab-report-item">
+                                            <h3 className="lab-name">{report.lab}</h3>
+                                            <p className="lab-test">{report.test}</p>
+                                            <span className={`lab-badge ${report.badge}`}>{report.status}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Patients and Recent Orders */}
+                        <div className="two-column-grid">
+                            {/* Patients */}
+                            <div className="content-card">
+                                <div className="card-header">
+                                    <h2 className="card-title">Patients</h2>
+                                    <button className="add-patient-btn">Add Patient</button>
+                                </div>
+                                <div className="patients-list">
+                                    {patients.map((patient) => (
+                                        <div key={patient.id} className="patient-item">
+                                            <h3 className="patient-name">{patient.name}</h3>
+                                            <p className="patient-type">{patient.type}</p>
+                                            <p className="patient-visit">Next Visit: {patient.nextVisit}</p>
+                                            <span className={`patient-badge ${patient.badge}`}>View History</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <Link href="#" className="view-all-users">View All Users</Link>
+                            </div>
+
+                            {/* Recent Orders */}
+                            <div className="content-card">
+                                <div className="card-header">
+                                    <h2 className="card-title">Recent Orders</h2>
+                                    <Link href="#" className="view-all-link">View All</Link>
+                                </div>
+                                <div className="orders-list">
+                                    {recentOrders.map((order) => (
+                                        <div key={order.id} className="order-item">
+                                            <h3 className="order-pharmacy">{order.pharmacy}</h3>
+                                            <p className="order-medicine">{order.medicine}</p>
+                                            <span className={`order-badge ${order.badge}`}>{order.status}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Bill & Claim Tracker */}
+                        <div className="content-card bill-tracker-card">
+                            <div className="card-header">
+                                <h2 className="card-title">Bill & Claim Tracker</h2>
+                                <span className="hospital-name">City Hospital</span>
+                            </div>
+                            <div className="bill-details">
+                                <div className="bill-row">
+                                    <span className="bill-label">Status</span>
+                                    <span className="bill-status">Under Review</span>
+                                </div>
+                                <div className="bill-row">
+                                    <span className="bill-label">Hospital</span>
+                                    <span className="bill-value">City Hospital</span>
+                                </div>
+                                <div className="bill-row">
+                                    <span className="bill-label">Payment</span>
+                                    <span className="bill-value">Rs. 50,000</span>
+                                </div>
+                                <div className="bill-actions">
+                                    <button className="bill-btn submit">Submit Details</button>
+                                    <button className="bill-btn cancel">Cancel Claim</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+        </div>
     );
 }
