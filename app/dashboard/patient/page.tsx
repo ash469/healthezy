@@ -1,10 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import './patient-dashboard.css';
+import '../../dashboard.css'
 
 export default function PatientDashboard() {
-    // Mock patient data
     const patientInfo = {
         name: "Patient's Name",
         age: 25,
@@ -12,7 +11,7 @@ export default function PatientDashboard() {
         bloodGroup: 'A+',
         mobileNo: '98564x1370',
         emailId: 'xyz@email.com',
-        avatar: '/doctor.png' // Using existing avatar
+        avatar: '/doctor.png' 
     };
 
     const stats = {
@@ -92,11 +91,13 @@ export default function PatientDashboard() {
     ];
 
     return (
-        <div className="patient-dashboard-wrapper">
+        <div className="patient-dashboard">
             <div className="patient-dashboard">
                 <div className="dashboard-header">
-                    <h1 className="dashboard-title">Patient Dashboard</h1>
-                    <button className="edit-profile-btn">
+                    <h1 className="text-4xl md:text-5xl font-bold text-[#0f766e] mb-8">
+                        Patient Dashboard
+                    </h1>
+                    <button className="edit-profile-btn bg-[#0d5c63]">
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
@@ -155,8 +156,8 @@ export default function PatientDashboard() {
                                 <div className="blog-stat">
                                     <span className="stat-icon">💬</span>
                                     <div>
-                                        <div className="stat-label text-black">Msg</div>
-                                        <div className="stat-value text-black">0</div>
+                                        <div className="text-black">Msg</div>
+                                        <div className="text-black">0</div>
                                     </div>
                                 </div>
                             </div>
@@ -192,13 +193,11 @@ export default function PatientDashboard() {
                             <div className="stat-card bg-gradient-to-br from-teal-400 to-teal-500">
                                 <div className="stat-number">{stats.patients}</div>
                                 <div className="stat-label">No. Of Patient</div>
-                                <div className="stat-badge">Active</div>
                                 <Link href="#" className="stat-link">View All</Link>
                             </div>
                             <div className="stat-card bg-gradient-to-br from-blue-400 to-blue-500">
                                 <div className="stat-number">{stats.appointments}</div>
                                 <div className="stat-label">No. Of Appointments</div>
-                                <div className="stat-badge">Active</div>
                                 <Link href="#" className="stat-link">View All</Link>
                             </div>
                             <div className="stat-card bg-gradient-to-br from-purple-400 to-purple-500">

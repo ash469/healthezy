@@ -9,9 +9,11 @@ const Hero = () => {
                 <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-white/10 rounded-full blur-3xl opacity-30"></div>
 
                 <div className="hero-grid">
+                    <div className="absolute -top-40 -right-40 w-24 h-24 bg-white/10 rounded-full pointer-events-none"></div>
                     <div className="col-span-5 flex flex-col justify-center space-y-2 md:space-y-8 relative z-20">
-                        <div className="bg-white/10 backdrop-blur-sm rounded-xl md:rounded-3xl p-2 md:p-6 border border-white/10 shadow-lg max-w-sm w-full md:w-auto">
-                            <h3 className="text-[10px] md:text-xl font-bold text-white text-center mb-2 md:mb-4">Request a Call</h3>
+                        <div className="relative overflow-hidden bg-white/10 backdrop-blur-sm rounded-xl md:rounded-3xl p-2 md:p-6 border border-white/10 shadow-lg max-w-sm w-full md:w-auto">
+                            
+                            <h3 className="text-[10px] md:text-xl font-bold text-white text-center mb-2 md:mb-4 relative z-10">Request a Call</h3>
                             <form className="space-y-2 md:space-y-4">
                                 <input
                                     suppressHydrationWarning

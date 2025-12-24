@@ -1,120 +1,191 @@
-import DashboardLayout from '@/components/dashboard/DashboardLayout';
+'use client';
+
+import Link from 'next/link';
+import '../../dashboard.css'; 
 
 export default function HospitalDashboard() {
-    const doctorStats = [
-        { name: "Dr. Sarah Johnson", specialization: "Cardiologist", appointments: 24, rating: 4.9 },
-        { name: "Dr. Michael Chen", specialization: "Pediatrician", appointments: 18, rating: 4.8 },
-        { name: "Dr. Emily Rodriguez", specialization: "Dermatologist", appointments: 21, rating: 4.9 },
-        { name: "Dr. James Wilson", specialization: "Orthopedic", appointments: 15, rating: 4.7 }
+    // Mock data for Hospital
+    const hospitalInfo = {
+        name: "Hospital's Name",
+        speciality: "Cardiology | Neurology | Oncology",
+        mobileNo: "9876543210",
+        emailId: "testmail00@gmail.com",
+        address: "123 Health Street, Med City"
+    };
+
+    const stats = {
+        appointmentsToday: 15,
+        activeDoctors: 15,
+        reportsProcessed: 15
+    };
+
+    const todaysAppointments = [
+        {
+            id: 1,
+            name: "Ravi Sharma",
+            details: "Cardiology • Dr. Rajesh Kumar",
+            time: "11:30 AM",
+            badge: "bg-teal-500"
+        },
+        {
+            id: 2,
+            name: "Ravi Sharma",
+            details: "Cardiology • Dr. Vinay Kumar",
+            time: "11:30 AM",
+            badge: "bg-teal-500"
+        }
     ];
 
-    const todayAppointments = [
-        { id: 1, patient: "John Doe", doctor: "Dr. Sarah Johnson", time: "10:00 AM", department: "Cardiology" },
-        { id: 2, patient: "Jane Smith", doctor: "Dr. Michael Chen", time: "11:30 AM", department: "Pediatrics" },
-        { id: 3, patient: "Mike Johnson", doctor: "Dr. Emily Rodriguez", time: "2:00 PM", department: "Dermatology" }
+    const activeDoctors = [
+        {
+            id: 1,
+            name: "Dr. Mehra",
+            speciality: "General Physician",
+            status: "Active",
+            statusColor: "bg-teal-500"
+        },
+        {
+            id: 2,
+            name: "Dr. Mehra",
+            speciality: "General Physician",
+            status: "Offline",
+            statusColor: "bg-yellow-500"
+        }
     ];
 
     return (
-        <DashboardLayout userType="hospital" userName="City General Hospital">
-            <div className="space-y-6">
-                {/* Header */}
-                <div>
-                    <h1 className="text-3xl font-bold mb-2">Hospital Dashboard</h1>
-                    <p className="text-gray-600">Manage doctors, appointments, and departments</p>
-                </div>
+        <div className="patient-dashboard">
+            <div className="dashboard-header">
+                <h1 className="text-4xl md:text-5xl font-bold text-[#0f766e] mb-8">
+                    Hospital Dashboard
+                </h1>
+                <button className="edit-profile-btn bg-[#0d5c63]">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Edit Profile
+                </button>
+            </div>
 
-                {/* Quick Stats */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="card bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-                        <div className="text-3xl mb-2">👨‍⚕️</div>
-                        <div className="text-3xl font-bold mb-1">45</div>
-                        <div className="text-sm opacity-90">Total Doctors</div>
-                    </div>
-                    <div className="card bg-gradient-to-br from-green-500 to-green-600 text-white">
-                        <div className="text-3xl mb-2">📅</div>
-                        <div className="text-3xl font-bold mb-1">123</div>
-                        <div className="text-sm opacity-90">Today's Appointments</div>
-                    </div>
-                    <div className="card bg-gradient-to-br from-purple-500 to-purple-600 text-white">
-                        <div className="text-3xl mb-2">🏥</div>
-                        <div className="text-3xl font-bold mb-1">12</div>
-                        <div className="text-sm opacity-90">Departments</div>
-                    </div>
-                    <div className="card bg-gradient-to-br from-orange-500 to-orange-600 text-white">
-                        <div className="text-3xl mb-2">💰</div>
-                        <div className="text-3xl font-bold mb-1">$125K</div>
-                        <div className="text-sm opacity-90">This Month Revenue</div>
-                    </div>
-                </div>
-
-                {/* Doctor Performance */}
-                <div className="card">
-                    <h2 className="text-2xl font-bold mb-4">Doctor Performance</h2>
-                    <div className="overflow-x-auto">
-                        <table className="w-full">
-                            <thead>
-                                <tr className="border-b">
-                                    <th className="text-left p-3">Doctor</th>
-                                    <th className="text-left p-3">Specialization</th>
-                                    <th className="text-left p-3">Appointments</th>
-                                    <th className="text-left p-3">Rating</th>
-                                    <th className="text-left p-3">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {doctorStats.map((doctor, index) => (
-                                    <tr key={index} className="border-b hover:bg-gray-50">
-                                        <td className="p-3 font-semibold">{doctor.name}</td>
-                                        <td className="p-3">{doctor.specialization}</td>
-                                        <td className="p-3">{doctor.appointments}</td>
-                                        <td className="p-3">
-                                            <div className="flex items-center gap-1">
-                                                <svg className="w-4 h-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                </svg>
-                                                <span className="font-semibold">{doctor.rating}</span>
-                                            </div>
-                                        </td>
-                                        <td className="p-3">
-                                            <button className="btn btn-outline btn-sm">View Details</button>
-                                        </td>
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Today's Appointments */}
-                    <div className="card">
-                        <h2 className="text-2xl font-bold mb-4">Today's Appointments</h2>
-                        <div className="space-y-3">
-                            {todayAppointments.map((apt) => (
-                                <div key={apt.id} className="p-4 bg-gray-50 rounded-lg">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <h3 className="font-semibold">{apt.patient}</h3>
-                                        <span className="badge badge-info">{apt.time}</span>
-                                    </div>
-                                    <p className="text-sm text-gray-600">{apt.doctor}</p>
-                                    <p className="text-sm text-gray-500">{apt.department}</p>
-                                </div>
-                            ))}
+            {/* Main Grid Layout */}
+            <div className="dashboard-grid">
+                {/* Left Column - Profile & Actions */}
+                <div className="profile-section">
+                    <div className="profile-card">
+                        <div className="profile-avatar">
+                            {/* Placeholder Avatar */}
+                            <div className="w-full h-full bg-white flex items-center justify-center text-gray-400">
+                                <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                            </div>
+                        </div>
+                        <h3 className="profile-name">{hospitalInfo.name}</h3>
+                        <div className="profile-details">
+                            <div className="detail-row">
+                                <span className="detail-label">Speciality:</span>
+                                <span className="detail-value text-right" style={{ maxWidth: '60%' }}>{hospitalInfo.speciality}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Mobile No:</span>
+                                <span className="detail-value">{hospitalInfo.mobileNo}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Email Id:</span>
+                                <span className="detail-value text-xs break-all">{hospitalInfo.emailId}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Address:</span>
+                                <span className="detail-value text-right text-xs" style={{ maxWidth: '60%' }}>{hospitalInfo.address}</span>
+                            </div>
                         </div>
                     </div>
 
                     {/* Quick Actions */}
-                    <div className="card">
-                        <h2 className="text-2xl font-bold mb-4">Quick Actions</h2>
-                        <div className="space-y-3">
-                            <button className="btn btn-primary w-full">Add New Doctor</button>
-                            <button className="btn btn-outline w-full">View All Appointments</button>
-                            <button className="btn btn-outline w-full">Manage Departments</button>
-                            <button className="btn btn-outline w-full">View Analytics</button>
+                    <div className="quick-links-card">
+                        <h3 className="section-title">Quick Actions</h3>
+                        <button className="quick-link-btn teal">
+                            Manage Doctors
+                        </button>
+                        <button className="quick-link-btn" style={{ background: 'white', color: '#0f766e', border: '1px solid #0f766e' }}>
+                            Manage Appointments
+                        </button>
+                    </div>
+
+                    {/* Upload Patient Report (Placed in Left Column for Consistency with Lab/Doctor) */}
+                    <div className="insurance-card">
+                        <h3 className="section-title">Upload Patient Report</h3>
+                        <div className="claims-count mb-4">Select Report File</div>
+
+                        <div className="flex flex-col gap-3">
+                            <div className="bg-white p-2 rounded-lg border border-teal-100 flex items-center justify-between">
+                                <span className="text-sm text-gray-500">No file chosen</span>
+                                <button className="px-3 py-1 bg-teal-600 text-white text-xs rounded hover:bg-teal-700">Choose</button>
+                            </div>
+                            <input type="text" placeholder="Patient Name" className="w-full p-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-teal-500" />
+                            <input type="text" placeholder="Department" className="w-full p-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:border-teal-500" />
+                            <button className="claim-btn submit mt-2">Submit Report</button>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Right Column - Stats and Content */}
+                <div className="content-section">
+                    {/* Stats Grid - 3 Columns */}
+                    <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                        <div className="stat-card bg-gradient-to-br from-teal-400 to-teal-500">
+                            <div className="stat-number">{stats.appointmentsToday}</div>
+                            <div className="stat-label">Appointments Today</div>
+                            <Link href="#" className="stat-link">View All</Link>
+                        </div>
+                        <div className="stat-card bg-gradient-to-br from-blue-400 to-blue-500">
+                            <div className="stat-number">{stats.activeDoctors}</div>
+                            <div className="stat-label">Active Doctors</div>
+                            <Link href="#" className="stat-link">View All</Link>
+                        </div>
+                        <div className="stat-card bg-gradient-to-br from-purple-400 to-purple-500">
+                            <div className="stat-number">{stats.reportsProcessed}</div>
+                            <div className="stat-label">Reports Processed</div>
+                            <Link href="#" className="stat-link">View All</Link>
+                        </div>
+                    </div>
+
+                    {/* Content Grid */}
+                    <div className="two-column-grid">
+                        {/* Today's Appointments */}
+                        <div className="content-card">
+                            <div className="card-header">
+                                <h2 className="card-title">Today's Appointments</h2>
+                                <Link href="#" className="view-all-link">View All</Link>
+                            </div>
+                            <div className="appointments-list">
+                                {todaysAppointments.map((apt) => (
+                                    <div key={apt.id} className="appointment-item">
+                                        <h3 className="appointment-doctor text-black">{apt.name}</h3>
+                                        <p className="appointment-date">{apt.details}</p>
+                                        <span className={`bg-teal-600 text-white px-2 py-1 rounded text-xs font-bold absolute top-4 right-4`}>{apt.time}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Active Doctors */}
+                        <div className="content-card">
+                            <div className="card-header">
+                                <h2 className="card-title">Active Doctors</h2>
+                                <Link href="#" className="view-all-link">View All</Link>
+                            </div>
+                            <div className="patients-list">
+                                {activeDoctors.map((doc) => (
+                                    <div key={doc.id} className="patient-item">
+                                        <h3 className="patient-name">{doc.name}</h3>
+                                        <p className="patient-visit">{doc.speciality}</p>
+                                        <span className={`patient-badge ${doc.statusColor}`}>{doc.status}</span>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </DashboardLayout>
+        </div>
     );
 }
