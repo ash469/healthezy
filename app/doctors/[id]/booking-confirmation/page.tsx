@@ -125,7 +125,8 @@ export default function BookingConfirmationPage() {
     const params = useParams();
     const searchParams = useSearchParams();
 
-    const doctorId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const doctorIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const doctorId = parseInt(doctorIdStr, 10);
     const doctor = getDoctorById(doctorId);
 
     const date = searchParams.get('date') || '25 Nov 2025 | Tuesday';
@@ -150,11 +151,16 @@ export default function BookingConfirmationPage() {
     }
 
     const bookingDetails = {
-        doctor: doctor,
-        patient: 'Mr. Rahul Mishra', // Mock patient
+        doctor: {
+            imageUrl: doctor.photoUrl || '/doctor.png',
+            name: doctor.fullName || 'Doctor',
+            specialty: doctor.specialization || '',
+            hospital: doctor.hospitalName || ''
+        },
+        patient: 'Mr. Rahul Mishra',
         date: date,
         time: slot,
-        slot: 'Confirmed Slot' // Generic label or derive based on time
+        slot: 'Confirmed Slot'
     };
 
     const handleDownload = async () => {
@@ -184,15 +190,15 @@ export default function BookingConfirmationPage() {
                 <div className="confirmation-doctor-section">
                     <div className="conf-doc-img">
                         <Image
-                            src={doctor.imageUrl}
-                            alt={doctor.name}
+                            src={doctor.photoUrl || '/doctor.png'}
+                            alt={doctor.fullName || 'Doctor'}
                             width={130}
                             height={130}
                         />
                     </div>
-                    <h3>{doctor.name}</h3>
-                    <p>{doctor.specialty}</p>
-                    <p>{doctor.hospital}</p>
+                    <h3>{doctor.fullName}</h3>
+                    <p>{doctor.specialization}</p>
+                    <p>{doctor.hospitalName}</p>
                 </div>
 
                 <div className="confirmation-details-section">

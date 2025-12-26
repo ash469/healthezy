@@ -12,7 +12,7 @@ export default function PharmacyPaymentPage() {
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, isLoading } = useAuth();
 
     const id = params?.id as string;
     const itemsParam = searchParams.get('items') || '';
@@ -28,6 +28,18 @@ export default function PharmacyPaymentPage() {
     const [selectedMethod, setSelectedMethod] = useState('paytm');
 
     if (!pharmacy) return <div>Pharmacy not found</div>;
+
+    // Show loading state while checking authentication
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#009ca6]"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     // Show login prompt if not authenticated
     if (!isAuthenticated) {

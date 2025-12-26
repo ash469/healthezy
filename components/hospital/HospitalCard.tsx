@@ -8,15 +8,12 @@ interface HospitalCardProps {
 }
 
 export default function HospitalCard({ hospital }: HospitalCardProps) {
-    // Show top 2 doctors as preview or just count
-    const doctorPreview = hospital.doctors.slice(0, 2).map(d => d.name).join(', ') + (hospital.doctors.length > 2 ? '...' : '');
-
     return (
         <div className="hospital-card">
             <div className="hospital-info-section">
                 <div className="hospital-image-container">
                     <Image
-                        src={hospital.imageUrl}
+                        src={hospital.logoUrl || '/hospital.png'}
                         alt={hospital.name}
                         width={120}
                         height={120}
@@ -27,9 +24,11 @@ export default function HospitalCard({ hospital }: HospitalCardProps) {
                     <h3 className="hospital-name">{hospital.name}</h3>
                     <p className="hospital-specialty">{hospital.address}</p>
 
-                    <p className="hospital-hospital">
-                        Doctors: {doctorPreview || 'Specialists Available'}
-                    </p>
+                    {hospital.specializations && (
+                        <p className="hospital-hospital">
+                            Specializations: {hospital.specializations}
+                        </p>
+                    )}
 
                     <div className="hospital-rating">
                         <span className="rating-tag">{hospital.rating} ★</span>

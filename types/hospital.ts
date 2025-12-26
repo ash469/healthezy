@@ -1,13 +1,15 @@
-import { Doctor } from './doctor';
-
 export interface Hospital {
-    id: string;
+    id: number;
     name: string;
-    location: string;
-    address: string;
-    imageUrl: string;
-    rating: number;
-    latitude: number;
-    longitude: number;
-    doctors: Doctor[];
+    location?: string;
+    address?: string;
+    city?: string;
+    phoneNumber?: string;
+    email?: string;
+    logoUrl?: string;
+    rating?: number;
+    latitude?: number;
+    longitude?: number;
+    specializations?: string;
+    isActive?: boolean;
 }

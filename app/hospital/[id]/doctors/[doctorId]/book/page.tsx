@@ -1,27 +1,36 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
-import '@/components/doctors/SlotBooking.css'; 
-import { getHospitalById, getDoctorByIds } from '@/data/hospitals';
-
-const SLOTS = {
-    morning: ['09:00', '10:00', '10:45', '12:00'],
-    afternoon: ['12:30', '1:00', '2:00', '03:15'],
-    evening: ['05:00', '06:00', '07:00'],
-};
+import '@/components/doctors/SlotBooking.css';
+import { getHospitalById } from '@/data/hospitals';
+import { getDoctorById } from '@/data/doctors';
+import { getSlotsByDay } from '@/data/appointments';
+import { categorizeTimeSlots, convertTo12Hour, getDayName } from '@/utils/timeSlots';
 
 export default function HospitalSlotBookingPage() {
     const router = useRouter();
     const params = useParams();
-    const hospitalId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const doctorId = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
+    const hospitalIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const hospitalId = parseInt(hospitalIdStr, 10);
+    const doctorIdStr = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
+    const doctorId = parseInt(doctorIdStr, 10);
 
     const hospital = getHospitalById(hospitalId);
-    
+    const doctor = getDoctorById(doctorId);
+
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
     const [currentDate, setCurrentDate] = useState(new Date('2025-11-25'));
+
+    // Get slots for the current selected day
+    const dayName = getDayName(currentDate);
+    const daySlots = getSlotsByDay(doctorId, dayName);
+
+    // Categorize time slots into morning, afternoon, evening
+    const categorizedSlots = useMemo(() => {
+        return categorizeTimeSlots(daySlots);
+    }, [daySlots]);
 
     if (!hospital) {
         return (
@@ -68,7 +77,7 @@ export default function HospitalSlotBookingPage() {
             <div className="doctor-summary-card" style={{ flexDirection: 'row', alignItems: 'flex-start', textAlign: 'left', padding: '24px', gap: '24px' }}>
                 <div className="doctor-summary-image" style={{ width: '120px', height: '120px', marginBottom: 0 }}>
                     <Image
-                        src={hospital.imageUrl}
+                        src={hospital.logoUrl || '/hospital.png'}
                         alt={hospital.name}
                         width={120}
                         height={120}
@@ -109,47 +118,60 @@ export default function HospitalSlotBookingPage() {
                 <div className="slot-group">
                     <h3 className="slot-group-title">Morning</h3>
                     <div className="slots-grid">
-                        {SLOTS.morning.map(slot => (
-                            <button
-                                key={slot}
-                                className={`time-slot ${selectedSlot === slot ? 'selected' : ''}`}
-                                onClick={() => handleSlotClick(slot)}
-                            >
-                                {slot}
-                            </button>
-                        ))}
+                        {categorizedSlots.morning.length > 0 ? (
+                            categorizedSlots.morning.map(slot => (
+                                <button
+                                    key={slot.time}
+                                    className={`time-slot ${selectedSlot === slot.time ? 'selected' : ''} ${!slot.available ? 'disabled' : ''}`}
+                                    onClick={() => slot.available && handleSlotClick(slot.time)}
+                                    disabled={!slot.available}
+                                >
+                                    {convertTo12Hour(slot.time)}
+                                </button>
+                            ))
+                        ) : (
+                            <p className="no-slots">No morning slots available</p>
+                        )}
                     </div>
                 </div>
 
                 <div className="slot-group">
                     <h3 className="slot-group-title">Afternoon</h3>
                     <div className="slots-grid">
-                        {SLOTS.afternoon.map((slot, index) => (
-                            <button
-                                key={slot}
-                                className={`time-slot ${index === 3 ? 'disabled' : ''} ${selectedSlot === slot ? 'selected' : ''}`}
-                                onClick={() => index !== 3 && handleSlotClick(slot)}
-                                disabled={index === 3}
-                            >
-                                {index === 3 ? 'N/A' : slot}
-                            </button>
-                        ))}
+                        {categorizedSlots.afternoon.length > 0 ? (
+                            categorizedSlots.afternoon.map(slot => (
+                                <button
+                                    key={slot.time}
+                                    className={`time-slot ${selectedSlot === slot.time ? 'selected' : ''} ${!slot.available ? 'disabled' : ''}`}
+                                    onClick={() => slot.available && handleSlotClick(slot.time)}
+                                    disabled={!slot.available}
+                                >
+                                    {slot.available ? convertTo12Hour(slot.time) : 'N/A'}
+                                </button>
+                            ))
+                        ) : (
+                            <p className="no-slots">No afternoon slots available</p>
+                        )}
                     </div>
                 </div>
 
                 <div className="slot-group">
                     <h3 className="slot-group-title">Evening</h3>
                     <div className="slots-grid">
-                        {SLOTS.evening.map(slot => (
-                            <button
-                                key={slot}
-                                className={`time-slot ${selectedSlot === slot ? 'selected' : ''}`}
-                                onClick={() => handleSlotClick(slot)}
-                            >
-                                {slot}
-                            </button>
-                        ))}
-                        <button className="time-slot disabled">N/A</button>
+                        {categorizedSlots.evening.length > 0 ? (
+                            categorizedSlots.evening.map(slot => (
+                                <button
+                                    key={slot.time}
+                                    className={`time-slot ${selectedSlot === slot.time ? 'selected' : ''} ${!slot.available ? 'disabled' : ''}`}
+                                    onClick={() => slot.available && handleSlotClick(slot.time)}
+                                    disabled={!slot.available}
+                                >
+                                    {convertTo12Hour(slot.time)}
+                                </button>
+                            ))
+                        ) : (
+                            <p className="no-slots">No evening slots available</p>
+                        )}
                     </div>
                 </div>
 

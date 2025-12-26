@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import DoctorCard from '@/components/doctors/DoctorCard';
 import '@/components/doctors/Doctors.css';
-import { Doctor } from '@/types/doctor';
 import { doctors } from '@/data/doctors';
 
 export default function DoctorsPage() {
@@ -19,12 +18,12 @@ export default function DoctorsPage() {
     // Sort Logic
     const sortedDoctors = [...filteredDoctors].sort((a, b) => {
         if (sortBy === 'Fees: Low to High') {
-            return a.price - b.price;
+            return (a.consultationFee || 0) - (b.consultationFee || 0);
         } else if (sortBy === 'Fees: High to Low') {
-            return b.price - a.price;
+            return (b.consultationFee || 0) - (a.consultationFee || 0);
         } else if (sortBy === 'Experience') {
-            const expA = parseInt(a.experience || '0');
-            const expB = parseInt(b.experience || '0');
+            const expA = a.experienceYears || parseInt(a.experience || '0');
+            const expB = b.experienceYears || parseInt(b.experience || '0');
             return expB - expA;
         }
         return 0;

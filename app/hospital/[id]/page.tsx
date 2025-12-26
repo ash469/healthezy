@@ -3,14 +3,15 @@
 import { useParams, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { getHospitalById } from '@/data/hospitals';
-import DoctorCard from '@/components/doctors/DoctorCard';
+import { getDoctorsByHospitalId } from '@/data/doctors';
 import '@/components/doctors/Doctors.css'; // Reusing exact CSS
 import Link from 'next/link';
 
 export default function HospitalDoctorsPage() {
     const params = useParams();
     const router = useRouter();
-    const hospitalId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const hospitalIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const hospitalId = parseInt(hospitalIdStr, 10);
     const hospital = getHospitalById(hospitalId);
 
     const [filterGender, setFilterGender] = useState<string>('Gender');
@@ -30,8 +31,11 @@ export default function HospitalDoctorsPage() {
         );
     }
 
+    // Fetch doctors for this hospital using the helper function
+    const doctors = getDoctorsByHospitalId(hospitalId);
+
     // Filter Logic
-    const filteredDoctors = hospital.doctors.filter(doctor => {
+    const filteredDoctors = doctors.filter((doctor) => {
         if (filterGender === 'Gender') return true;
         return doctor.gender === filterGender;
     });
@@ -39,12 +43,12 @@ export default function HospitalDoctorsPage() {
     // Sort Logic
     const sortedDoctors = [...filteredDoctors].sort((a, b) => {
         if (sortBy === 'Fees: Low to High') {
-            return a.price - b.price;
+            return (a.consultationFee || 0) - (b.consultationFee || 0);
         } else if (sortBy === 'Fees: High to Low') {
-            return b.price - a.price;
+            return (b.consultationFee || 0) - (a.consultationFee || 0);
         } else if (sortBy === 'Experience') {
-            const expA = parseInt(a.experience || '0');
-            const expB = parseInt(b.experience || '0');
+            const expA = a.experienceYears || parseInt(a.experience || '0');
+            const expB = b.experienceYears || parseInt(b.experience || '0');
             return expB - expA;
         }
         return 0;
@@ -52,7 +56,7 @@ export default function HospitalDoctorsPage() {
 
     return (
         <div className="doctors-container">
-           
+
             <div className="doctors-header">
                 <h1 className="doctors-title">Doctors at {hospital.name}</h1>
 
@@ -93,15 +97,15 @@ export default function HospitalDoctorsPage() {
                             <div className="doctor-info-section">
                                 <div className="doctor-image-container">
                                     <img
-                                        src={doctor.imageUrl}
-                                        alt={doctor.name}
+                                        src={doctor.photoUrl || '/doctor.png'}
+                                        alt={doctor.fullName || 'Doctor'}
                                         className="doctor-image"
                                     />
                                 </div>
                                 <div className="doctor-details">
-                                    <h3 className="doctor-name">{doctor.name}</h3>
-                                    <p className="doctor-specialty">{doctor.specialty}</p>
-                                    <p className="doctor-hospital">{hospital.name} | Fees - {doctor.price}/-</p>
+                                    <h3 className="doctor-name">{doctor.fullName}</h3>
+                                    <p className="doctor-specialty">{doctor.specialization}</p>
+                                    <p className="doctor-hospital">{hospital.name} | Fees - ₹{doctor.consultationFee}/-</p>
                                     <div className="doctor-rating">
                                         <span className="rating-tag">{doctor.rating} ★</span>
                                     </div>

@@ -13,17 +13,17 @@ export default function DoctorCard({ doctor }: DoctorCardProps) {
             <div className="doctor-info-section">
                 <div className="doctor-image-container">
                     <Image
-                        src={doctor.imageUrl}
-                        alt={doctor.name}
+                        src={doctor.photoUrl || '/doctor.png'}
+                        alt={doctor.fullName || 'Doctor'}
                         width={100}
                         height={100}
                         className="doctor-image"
                     />
                 </div>
                 <div className="doctor-details">
-                    <h3 className="doctor-name">{doctor.name}</h3>
-                    <p className="doctor-specialty">{doctor.specialty}</p>
-                    <p className="doctor-hospital">{doctor.hospital} | Fees - {doctor.price}/-</p>
+                    <h3 className="doctor-name">{doctor.fullName}</h3>
+                    <p className="doctor-specialty">{doctor.specialization}</p>
+                    <p className="doctor-hospital">{doctor.hospitalName} | Fees - {doctor.consultationFee}/-</p>
                     <div className="doctor-rating">
                         <span className="rating-tag">{doctor.rating} ★</span>
                     </div>

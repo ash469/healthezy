@@ -9,7 +9,7 @@ export default function HospitalPage() {
     const [sortBy, setSortBy] = useState('Sort by');
 
     const sortedHospitals = [...hospitals].sort((a, b) => {
-        if (sortBy === 'Rating') return b.rating - a.rating;
+        if (sortBy === 'Rating') return (b.rating || 0) - (a.rating || 0);
         return 0;
     });
 

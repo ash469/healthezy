@@ -13,19 +13,20 @@ export default function PaymentPage() {
     const params = useParams();
     const searchParams = useSearchParams();
     const slot = searchParams.get('slot');
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, isLoading } = useAuth();
 
     // Fetch doctor data
-    const doctorId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const doctorIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const doctorId = parseInt(doctorIdStr, 10);
     const doctor = getDoctorById(doctorId);
 
     const [step, setStep] = useState<'summary' | 'method'>('summary');
     const [selectedMethod, setSelectedMethod] = useState('paytm');
     const charges = {
-        appointment: doctor?.price || 700.00,
+        appointment: doctor?.consultationFee || 700.00,
         emergency: 0.00,
         other: 0.00,
-        total: doctor?.price || 700.00
+        total: doctor?.consultationFee || 700.00
     };
 
     if (!doctor) {
@@ -50,6 +51,18 @@ export default function PaymentPage() {
         router.push(`/doctors/${doctor.id}/booking-confirmation?slot=${slot}&date=${searchParams.get('date')}`);
     };
 
+    // Show loading state while checking authentication
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#009ca6]"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
+
     // Show login prompt if not authenticated
     if (!isAuthenticated) {
         return (
@@ -66,16 +79,16 @@ export default function PaymentPage() {
                 <div className="payment-doctor-card">
                     <div className="payment-doctor-image">
                         <Image
-                            src={doctor.imageUrl}
-                            alt={doctor.name}
+                            src={doctor.photoUrl || '/doctor.png'}
+                            alt={doctor.fullName || 'Doctor'}
                             width={120}
                             height={120}
                         />
                     </div>
                     <div className="payment-doctor-details">
-                        <h3>{doctor.name}</h3>
-                        <p>{doctor.specialty}</p>
-                        <p>{doctor.hospital}</p>
+                        <h3>{doctor.fullName}</h3>
+                        <p>{doctor.specialization}</p>
+                        <p>{doctor.hospitalName}</p>
                     </div>
                 </div>
 

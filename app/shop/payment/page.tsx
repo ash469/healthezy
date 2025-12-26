@@ -11,7 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 function ShopPaymentContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, isLoading } = useAuth();
 
     const itemsParam = searchParams.get('items') || '';
 
@@ -23,6 +23,18 @@ function ShopPaymentContent() {
 
     const [step, setStep] = useState<'summary' | 'method'>('summary');
     const [selectedMethod, setSelectedMethod] = useState('paytm');
+
+    // Show loading state while checking authentication
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#009ca6]"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
+    }
 
     // Show login prompt if not authenticated
     if (!isAuthenticated) {

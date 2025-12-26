@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image from 'next/image';
 import '@/components/doctors/Payment.css';
-import { getHospitalById, getDoctorByIds } from '@/data/hospitals';
+import { getHospitalById } from '@/data/hospitals';
 import LoginPrompt from '@/components/auth/LoginPrompt';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -13,26 +13,39 @@ export default function HospitalPaymentPage() {
     const params = useParams();
     const searchParams = useSearchParams();
     const slot = searchParams.get('slot');
-    const { isAuthenticated } = useAuth();
+    const { isAuthenticated, isLoading } = useAuth();
 
-    const hospitalId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const doctorId = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
+    const hospitalIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const hospitalId = parseInt(hospitalIdStr, 10);
+    const doctorIdStr = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
+    const doctorId = parseInt(doctorIdStr, 10);
 
     const hospital = getHospitalById(hospitalId);
-    const doctor = getDoctorByIds(hospitalId, doctorId);
 
     const [step, setStep] = useState<'summary' | 'method'>('summary');
     const [selectedMethod, setSelectedMethod] = useState('paytm');
 
     const charges = {
-        appointment: doctor?.price || 700.00,
+        appointment: 700.00,
         emergency: 0.00,
         other: 0.00,
-        total: doctor?.price || 700.00
+        total: 700.00
     };
 
-    if (!hospital || !doctor) {
-        return <div>Hospital or Doctor not found</div>;
+    if (!hospital) {
+        return <div>Hospital not found</div>;
+    }
+
+    // Show loading state while checking authentication
+    if (isLoading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#009ca6]"></div>
+                    <p className="mt-4 text-gray-600">Loading...</p>
+                </div>
+            </div>
+        );
     }
 
     // Show login prompt if not authenticated
@@ -56,7 +69,7 @@ export default function HospitalPaymentPage() {
                 <div className="payment-doctor-card">
                     <div className="payment-doctor-image">
                         <Image
-                            src={hospital.imageUrl}
+                            src={hospital.logoUrl || '/hospital.png'}
                             alt={hospital.name}
                             width={120}
                             height={120}

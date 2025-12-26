@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import { Document, Page, Text, View, StyleSheet, Image as PDFImage, pdf } from '@react-pdf/renderer';
 import '@/components/doctors/Confirmation.css';
-import { getHospitalById, getDoctorByIds } from '@/data/hospitals';
+import { getHospitalById } from '@/data/hospitals';
+import { getDoctorById } from '@/data/doctors';
 
 // --- PDF Styles and Document Definition ---
 const styles = StyleSheet.create({
@@ -128,11 +129,11 @@ export default function HospitalBookingConfirmationPage() {
     const params = useParams();
     const searchParams = useSearchParams();
 
-    const hospitalId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const doctorId = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
+    const hospitalIdNum = parseInt(Array.isArray(params.id) ? params.id[0] : (params.id || ''), 10);
+    const doctorIdNum = parseInt(Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || ''), 10);
 
-    const hospital = getHospitalById(hospitalId);
-    const doctor = getDoctorByIds(hospitalId, doctorId);
+    const hospital = getHospitalById(hospitalIdNum);
+    const doctor = getDoctorById(doctorIdNum);
 
     const date = searchParams.get('date') || '25 Nov 2025 | Tuesday';
     const slot = searchParams.get('slot') || '10:00';
@@ -146,8 +147,11 @@ export default function HospitalBookingConfirmationPage() {
     }
 
     const bookingDetails = {
-        hospital: hospital,
-        doctorName: doctor.name,
+        hospital: {
+            ...hospital,
+            imageUrl: hospital?.logoUrl || '/hospital.png'
+        },
+        doctorName: doctor?.fullName || 'Doctor',
         patient: 'Mr. Rahul Mishra',
         date: date,
         time: slot,
@@ -181,15 +185,15 @@ export default function HospitalBookingConfirmationPage() {
                 <div className="confirmation-doctor-section">
                     <div className="conf-doc-img">
                         <Image
-                            src={hospital.imageUrl}
-                            alt={hospital.name}
+                            src={hospital?.logoUrl || '/hospital.png'}
+                            alt={hospital?.name || 'Hospital'}
                             width={130}
                             height={130}
                         />
                     </div>
-                    <h3>{hospital.name}</h3>
-                    <p>{hospital.address}</p>
-                    <p className="text-sm mt-2 font-semibold text-[#0e5c63]">Doctor: {doctor.name}</p>
+                    <h3>{hospital?.name}</h3>
+                    <p>{hospital?.address}</p>
+                    <p className="text-sm mt-2 font-semibold text-[#0e5c63]">Doctor: {doctor?.fullName}</p>
                 </div>
 
                 <div className="confirmation-details-section">

@@ -1,11 +1,17 @@
 export interface Doctor {
-    id: string;
-    name: string;
-    specialty: string;
-    hospital: string;
-    price: number;
-    imageUrl: string;
-    rating: number;
-    experience?: string;
-    gender?: 'Male' | 'Female';
+    id: number;
+    hospitalId?: number; // Foreign key to link doctor to hospital
+    fullName?: string;
+    firstName?: string;
+    lastName?: string;
+    specialization?: string;
+    qualification?: string;
+    experienceYears?: number;
+    experience?: string; 
+    consultationFee?: number;
+    hospitalName?: string;
+    photoUrl?: string;
+    rating?: number;
+    gender?: 'Male' | 'Female' | 'MALE' | 'FEMALE' | 'OTHER';
+    status?: 'ACTIVE' | 'INACTIVE' | 'ON_LEAVE';
 }
