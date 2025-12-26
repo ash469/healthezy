@@ -5,12 +5,15 @@ import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image from 'next/image';
 import '@/components/doctors/Payment.css';
 import { getHospitalById, getDoctorByIds } from '@/data/hospitals';
+import LoginPrompt from '@/components/auth/LoginPrompt';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function HospitalPaymentPage() {
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
     const slot = searchParams.get('slot');
+    const { isAuthenticated } = useAuth();
 
     const hospitalId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
     const doctorId = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
@@ -30,6 +33,11 @@ export default function HospitalPaymentPage() {
 
     if (!hospital || !doctor) {
         return <div>Hospital or Doctor not found</div>;
+    }
+
+    // Show login prompt if not authenticated
+    if (!isAuthenticated) {
+        return <LoginPrompt message="Please login to continue with your payment" onClose={() => router.back()} />;
     }
 
     const handleProceed = () => {

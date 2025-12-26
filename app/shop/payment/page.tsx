@@ -5,10 +5,13 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { getProductById } from '@/data/shop';
 import '@/components/doctors/Payment.css';
+import LoginPrompt from '@/components/auth/LoginPrompt';
+import { useAuth } from '@/contexts/AuthContext';
 
 function ShopPaymentContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { isAuthenticated } = useAuth();
 
     const itemsParam = searchParams.get('items') || '';
 
@@ -20,6 +23,11 @@ function ShopPaymentContent() {
 
     const [step, setStep] = useState<'summary' | 'method'>('summary');
     const [selectedMethod, setSelectedMethod] = useState('paytm');
+
+    // Show login prompt if not authenticated
+    if (!isAuthenticated) {
+        return <LoginPrompt message="Please login to continue with your payment" onClose={() => router.back()} />;
+    }
 
     // Resolve products
     const selectedProducts = cartItemsList.map(item => {

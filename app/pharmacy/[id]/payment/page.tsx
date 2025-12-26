@@ -5,11 +5,14 @@ import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image from 'next/image';
 import { getPharmacyById } from '@/data/pharmacy';
 import '@/components/doctors/Payment.css';
+import LoginPrompt from '@/components/auth/LoginPrompt';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function PharmacyPaymentPage() {
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
+    const { isAuthenticated } = useAuth();
 
     const id = params?.id as string;
     const itemsParam = searchParams.get('items') || '';
@@ -25,6 +28,11 @@ export default function PharmacyPaymentPage() {
     const [selectedMethod, setSelectedMethod] = useState('paytm');
 
     if (!pharmacy) return <div>Pharmacy not found</div>;
+
+    // Show login prompt if not authenticated
+    if (!isAuthenticated) {
+        return <LoginPrompt message="Please login to continue with your payment" onClose={() => router.back()} />;
+    }
 
     // Resolve medicines
     const selectedMedicines = cartItems.map(item => {

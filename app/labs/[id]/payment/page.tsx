@@ -5,11 +5,14 @@ import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image from 'next/image';
 import '@/components/doctors/Payment.css';
 import { getLabById } from '@/data/labs';
+import LoginPrompt from '@/components/auth/LoginPrompt';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function LabPaymentPage() {
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
+    const { isAuthenticated } = useAuth();
 
     const labId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
     const lab = getLabById(labId);
@@ -31,6 +34,11 @@ export default function LabPaymentPage() {
     };
 
     if (!lab) return <div>Lab not found</div>;
+
+    // Show login prompt if not authenticated
+    if (!isAuthenticated) {
+        return <LoginPrompt message="Please login to continue with your payment" onClose={() => router.back()} />;
+    }
 
     const handleProceed = () => {
         setStep('method');

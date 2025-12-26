@@ -5,12 +5,15 @@ import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image from 'next/image';
 import '@/components/doctors/Payment.css';
 import { getDoctorById } from '@/data/doctors';
+import LoginPrompt from '@/components/auth/LoginPrompt';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function PaymentPage() {
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
     const slot = searchParams.get('slot');
+    const { isAuthenticated } = useAuth();
 
     // Fetch doctor data
     const doctorId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
@@ -18,7 +21,6 @@ export default function PaymentPage() {
 
     const [step, setStep] = useState<'summary' | 'method'>('summary');
     const [selectedMethod, setSelectedMethod] = useState('paytm');
-
     const charges = {
         appointment: doctor?.price || 700.00,
         emergency: 0.00,
@@ -47,6 +49,16 @@ export default function PaymentPage() {
     const handleConfirm = () => {
         router.push(`/doctors/${doctor.id}/booking-confirmation?slot=${slot}&date=${searchParams.get('date')}`);
     };
+
+    // Show login prompt if not authenticated
+    if (!isAuthenticated) {
+        return (
+            <LoginPrompt
+                message="Please login to continue with your payment"
+                onClose={() => router.back()}
+            />
+        );
+    }
 
     return (
         <div className="payment-container">
