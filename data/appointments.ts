@@ -1,4 +1,4 @@
-import { AppointmentSchedule, TimeSlot, DaySchedule } from '@/types/appointment';
+import { AppointmentSchedule, TimeSlot, DaySchedule } from '@/types/doctor';
 
 // Helper to create time slots in 24-hour format
 const createTimeSlots = (times: string[], available: boolean = true): TimeSlot[] => {

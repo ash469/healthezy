@@ -64,11 +64,11 @@ export default function LabConfirmationPage() {
     const searchParams = useSearchParams();
 
     const labId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const lab = getLabById(labId);
+    const lab = getLabById(parseInt(labId));
 
     const date = searchParams.get('date') || 'N/A';
     const slot = searchParams.get('slot') || 'N/A';
-    const testIds = searchParams.get('tests')?.split(',') || [];
+    const testIds = searchParams.get('tests')?.split(',').map(id => parseInt(id)) || [];
     const selectedTests = lab?.availableTests.filter(t => testIds.includes(t.id)) || [];
 
     useEffect(() => { setIsClient(true); }, []);

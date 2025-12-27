@@ -11,5 +11,15 @@ export interface Hospital {
     latitude?: number;
     longitude?: number;
     specializations?: string;
-    isActive?: boolean;
+    type?: string;
+    description?: string;
+    website?: string;
+    openingTime?: string;
+    closingTime?: string;
+    is24x7?: boolean;
+    facilities?: string;
+    totalBeds?: number;
+    availableBeds?: number;
+    reviewCount?: number;
+    doctorCount?: number;
 }

@@ -6,26 +6,38 @@ import { getPharmacyById } from '@/data/pharmacy';
 import { Medicine } from '@/types/pharmacy';
 import Image from 'next/image';
 import '@/components/pharmacy/Pharmacy.css';
+import ProductDescriptionModal from '@/components/shared/ProductDescriptionModal';
 
 export default function PharmacyPurchasePage() {
     const params = useParams();
     const router = useRouter();
     const id = params?.id as string;
-    const pharmacy = getPharmacyById(id);
 
-    const [cart, setCart] = useState<{ [key: string]: number }>({});
+    // Validate ID
+    if (!id || isNaN(parseInt(id))) {
+        console.error('Invalid pharmacy ID:', id);
+        return <div className="p-10 text-center">Invalid pharmacy ID</div>;
+    }
+
+    console.log('Looking up pharmacy with ID:', parseInt(id));
+    const pharmacy = getPharmacyById(parseInt(id));
+    console.log('Found pharmacy:', pharmacy ? pharmacy.name : 'NOT FOUND');
+
+    const [cart, setCart] = useState<{ [key: number]: number }>({});
     const [searchQuery, setSearchQuery] = useState('');
     const [uploadedFile, setUploadedFile] = useState<File | null>(null);
     const [showChatModal, setShowChatModal] = useState(false);
     const [chatMessage, setChatMessage] = useState('');
     const [chatMessages, setChatMessages] = useState<{ sender: 'user' | 'pharmacist', text: string }[]>([]);
+    const [showDescModal, setShowDescModal] = useState(false);
+    const [selectedMedicine, setSelectedMedicine] = useState<Medicine | null>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     if (!pharmacy) {
         return <div className="p-10 text-center">Pharmacy not found</div>;
     }
 
-    const handleQuantityChange = (medicineId: string, delta: number) => {
+    const handleQuantityChange = (medicineId: number, delta: number) => {
         setCart(prev => {
             const currentQty = prev[medicineId] || 0;
             const newQty = Math.max(0, currentQty + delta);
@@ -58,7 +70,7 @@ export default function PharmacyPurchasePage() {
         const file = e.target.files?.[0];
         if (file) {
             setUploadedFile(file);
-            // TODO: Send file to backend API
+            // Send file to backend API
             // const formData = new FormData();
             // formData.append('prescription', file);
             // formData.append('pharmacyId', id);
@@ -77,7 +89,7 @@ export default function PharmacyPurchasePage() {
         if (chatMessage.trim()) {
             setChatMessages(prev => [...prev, { sender: 'user', text: chatMessage }]);
 
-            // TODO: Send message to backend API
+            // Send message to backend API
             // await fetch('/api/pharmacy/chat', {
             //     method: 'POST',
             //     body: JSON.stringify({ pharmacyId: id, message: chatMessage })
@@ -225,7 +237,16 @@ export default function PharmacyPurchasePage() {
                                             </button>
                                         )}
 
-                                        <span className="know-more">Know More →</span>
+                                        <span
+                                            className="know-more"
+                                            onClick={() => {
+                                                setSelectedMedicine(med);
+                                                setShowDescModal(true);
+                                            }}
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            Know More →
+                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -282,8 +303,8 @@ export default function PharmacyPurchasePage() {
                                 chatMessages.map((msg, idx) => (
                                     <div key={idx} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[80%] rounded-2xl px-4 py-3 shadow-sm ${msg.sender === 'user'
-                                                ? 'bg-[#009ca6] text-white rounded-tr-none'
-                                                : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
+                                            ? 'bg-[#009ca6] text-white rounded-tr-none'
+                                            : 'bg-white text-gray-800 rounded-tl-none border border-gray-100'
                                             }`}>
                                             <p className="text-sm leading-relaxed">{msg.text}</p>
                                             <p className={`text-[10px] mt-1 text-right ${msg.sender === 'user' ? 'text-white/70' : 'text-gray-400'}`}>
@@ -320,6 +341,13 @@ export default function PharmacyPurchasePage() {
                     </div>
                 </div>
             )}
+
+            <ProductDescriptionModal
+                isOpen={showDescModal}
+                onClose={() => setShowDescModal(false)}
+                product={selectedMedicine}
+                type="medicine"
+            />
         </div>
     );
 }

@@ -64,12 +64,12 @@ export default function PharmacyConfirmationPage() {
     const amount = searchParams.get('amount') || '0';
     const date = searchParams.get('date') || new Date().toLocaleDateString();
 
-    const pharmacy = getPharmacyById(id);
+    const pharmacy = getPharmacyById(parseInt(id));
 
     // Parse items for breakdown
     const cartItems = itemsParam.split(',').filter(Boolean).map(item => {
         const [medId, qtyStr] = item.split(':');
-        return { medId, qty: parseInt(qtyStr, 10) };
+        return { medId: parseInt(medId), qty: parseInt(qtyStr, 10) };
     });
 
     const selectedMedicines = cartItems.map(item => {

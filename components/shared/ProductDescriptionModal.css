@@ -1,0 +1,153 @@
+/* Product Description Modal Styles */
+
+.product-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    padding: 1rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.product-modal-content {
+    width: 100%;
+    max-width: 500px;
+    padding: 2rem;
+    border-radius: 1.5rem;
+    position: relative;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    animation: slideUp 0.3s ease-out;
+}
+
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    line-height: 1;
+    color: #0e5c63;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.close-btn:hover {
+    transform: scale(1.1);
+}
+
+.modal-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #0e5c63;
+    margin-bottom: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.section-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #4db6ac;
+}
+
+.section-text {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #444;
+}
+
+.modal-footer {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: center;
+}
+
+.got-it-btn {
+    background-color: #0e8a93;
+    color: white;
+    border: none;
+    padding: 0.75rem 2.5rem;
+    border-radius: 2rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 4px 15px rgba(14, 138, 147, 0.3);
+}
+
+.got-it-btn:hover {
+    background-color: #0e5c63;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(14, 138, 147, 0.4);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Custom Scrollbar for Modal content */
+.product-modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.product-modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+}
+
+.product-modal-content::-webkit-scrollbar-thumb {
+    background: rgba(14, 138, 147, 0.5);
+    border-radius: 10px;
+}
+
+.product-modal-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(14, 138, 147, 0.7);
+}

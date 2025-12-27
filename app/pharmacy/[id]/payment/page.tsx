@@ -16,12 +16,12 @@ export default function PharmacyPaymentPage() {
 
     const id = params?.id as string;
     const itemsParam = searchParams.get('items') || '';
-    const pharmacy = getPharmacyById(id);
+    const pharmacy = getPharmacyById(parseInt(id));
 
     // Parse items: "id:qty,id:qty"
     const cartItems = itemsParam.split(',').filter(Boolean).map(item => {
         const [medId, qtyStr] = item.split(':');
-        return { medId, qty: parseInt(qtyStr, 10) };
+        return { medId: parseInt(medId), qty: parseInt(qtyStr, 10) };
     });
 
     const [step, setStep] = useState<'summary' | 'method'>('summary');
@@ -48,7 +48,7 @@ export default function PharmacyPaymentPage() {
 
     // Resolve medicines
     const selectedMedicines = cartItems.map(item => {
-        const med = pharmacy.availableMedicines.find(m => m.id === item.medId);
+        const med = pharmacy.availableMedicines?.find(m => m.id === item.medId);
         if (!med) return null;
         return {
             ...med,

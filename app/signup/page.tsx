@@ -51,7 +51,7 @@ const SignupContent = () => {
         } else {
             console.log('Provider Data:', providerFormData);
         }
-        // TODO: Add API call here
+        // Add API call here
     };
 
     return (

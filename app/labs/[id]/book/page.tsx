@@ -6,14 +6,17 @@ import Image from 'next/image';
 import { getLabById } from '@/data/labs';
 import { Test } from '@/types/lab';
 import '@/components/labs/LabBooking.css';
+import ProductDescriptionModal from '@/components/shared/ProductDescriptionModal';
 
 export default function LabBookingPage() {
     const router = useRouter();
     const params = useParams();
     const labId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const lab = getLabById(labId);
+    const lab = getLabById(parseInt(labId));
 
     const [selectedTests, setSelectedTests] = useState<Test[]>([]);
+    const [showDescModal, setShowDescModal] = useState(false);
+    const [selectedTest, setSelectedTest] = useState<Test | null>(null);
 
     if (!lab) {
         return <div className="p-10 text-center">Lab Not Found</div>;
@@ -123,7 +126,14 @@ export default function LabBookingPage() {
                                 >
                                     {isSelected ? 'Added' : 'Add To Cart'}
                                 </button>
-                                <span className="know-more-link">
+                                <span
+                                    className="know-more-link"
+                                    onClick={() => {
+                                        setSelectedTest(test);
+                                        setShowDescModal(true);
+                                    }}
+                                    style={{ cursor: 'pointer' }}
+                                >
                                     Know More →
                                 </span>
                             </div>
@@ -131,6 +141,13 @@ export default function LabBookingPage() {
                     );
                 })}
             </div>
+
+            <ProductDescriptionModal
+                isOpen={showDescModal}
+                onClose={() => setShowDescModal(false)}
+                product={selectedTest}
+                type="test"
+            />
         </div>
     );
 }

@@ -1,4 +1,4 @@
-import { TimeSlot, CategorizedSlots } from '@/types/appointment';
+import { TimeSlot, CategorizedSlots } from '@/types/doctor';
 
 
 export function categorizeTimeSlots(timeSlots: TimeSlot[]): CategorizedSlots {

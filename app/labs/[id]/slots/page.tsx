@@ -12,10 +12,10 @@ export default function LabSlotsPage() {
     const searchParams = useSearchParams();
 
     const labId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const lab = getLabById(labId);
+    const lab = getLabById(parseInt(labId));
 
     // Get test IDs from URL
-    const testIds = searchParams.get('tests')?.split(',') || [];
+    const testIds = searchParams.get('tests')?.split(',').map(id => parseInt(id)) || [];
     const selectedTests = lab?.availableTests.filter(t => testIds.includes(t.id)) || [];
 
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
