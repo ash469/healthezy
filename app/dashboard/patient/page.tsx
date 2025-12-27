@@ -1,94 +1,23 @@
-'use client';
-
 import Link from 'next/link';
-import '../../dashboard.css'
+import '../../dashboard.css';
+import { getPatientDashboardData } from '@/services/patient';
 
-export default function PatientDashboard() {
-    const patientInfo = {
-        name: "Patient's Name",
-        age: 25,
-        gender: 'M',
-        bloodGroup: 'A+',
-        mobileNo: '98564x1370',
-        emailId: 'xyz@email.com',
-        avatar: '/doctor.png' 
-    };
+export default async function PatientDashboard() {
+    const data = await getPatientDashboardData();
 
-    const stats = {
-        patients: 4,
-        appointments: 6,
-        prescriptions: 6,
-        labTests: 2
-    };
+    if (!data) {
+        return <div className="p-8 text-center text-[#0f766e] font-semibold">Failed to load patient dashboard data.</div>;
+    }
 
-    const upcomingAppointments = [
-        {
-            id: 1,
-            doctor: "Dr. Mehra",
-            specialization: "General Physician",
-            date: "Dec 25, 2025",
-            status: "Confirmed",
-            badge: "bg-teal-500"
-        },
-        {
-            id: 2,
-            doctor: "Dr. Kailash",
-            specialization: "Urologist",
-            date: "Dec 30, 2025",
-            status: "Pending",
-            badge: "bg-orange-500"
-        }
-    ];
-
-    const labReports = [
-        {
-            id: 1,
-            lab: "PathLabs",
-            test: "Blood Test",
-            date: "Dec 20, 2025",
-            status: "Available",
-            badge: "bg-green-500"
-        },
-        {
-            id: 2,
-            lab: "Sal Labs",
-            test: "Urine Test",
-            date: "Dec 18, 2025",
-            status: "Pending",
-            badge: "bg-yellow-500"
-        }
-    ];
-
-    const patients = [
-        { id: 1, name: "Rahul Mishra", type: "New Born", nextVisit: "Dec 25, 12", badge: "bg-teal-500" },
-        { id: 2, name: "Prince Mishra", type: "New Born", nextVisit: "Dec 25, 12", badge: "bg-blue-500" }
-    ];
-
-    const recentOrders = [
-        {
-            id: 1,
-            pharmacy: "Apollo Pharma",
-            medicine: "Dolo 650",
-            status: "Delivered",
-            badge: "bg-green-500"
-        },
-        {
-            id: 2,
-            pharmacy: "Wellness Store",
-            medicine: "Vitamin D3",
-            status: "Pending",
-            badge: "bg-orange-500"
-        }
-    ];
-
-    const insuranceClaims = [
-        {
-            hospital: "City Hospital",
-            amount: "Rs. 50k",
-            status: "Under Review",
-            progress: 65
-        }
-    ];
+    const {
+        patientInfo,
+        stats,
+        upcomingAppointments,
+        labReports,
+        patients,
+        recentOrders,
+        insuranceClaims
+    } = data;
 
     return (
         <div className="patient-dashboard">

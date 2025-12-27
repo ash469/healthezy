@@ -1,5 +1,6 @@
 import { apiClient } from '../config';
 import type { Hospital } from '@/types/hospital';
+import type { HospitalDashboardData } from '@/types/dashboard/hospital';
 
 // Backend API response type (this is what the real API returns)
 interface HospitalApiResponse {
@@ -102,4 +103,16 @@ export async function getHospitalById(id: number): Promise<Hospital | null> {
     // For now, return dummy data
     const { getHospitalById } = await import('@/data/hospitals');
     return getHospitalById(id) || null;
+}
+
+/**
+ * Get all data for the hospital dashboard
+ */
+export async function getHospitalDashboardData(): Promise<HospitalDashboardData> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Fetch from centralized dummy data
+    const { hospitalDashboardData } = await import('@/data/dashboard/hospital');
+    return hospitalDashboardData;
 }

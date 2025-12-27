@@ -1,18 +1,18 @@
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
+import { getEcommerceDashboardData } from '@/services/ecommerce';
 
-export default function EcommerceDashboard() {
-    const recentOrders = [
-        { id: "#12345", customer: "John Doe", product: "Multivitamin Tablets", amount: "$29.99", status: "Delivered" },
-        { id: "#12346", customer: "Jane Smith", product: "Blood Pressure Monitor", amount: "$49.99", status: "Shipped" },
-        { id: "#12347", customer: "Mike Johnson", product: "Protein Powder", amount: "$59.99", status: "Processing" },
-        { id: "#12348", customer: "Sarah Williams", product: "Fitness Tracker", amount: "$89.99", status: "Pending" }
-    ];
+export default async function EcommerceDashboard() {
+    const data = await getEcommerceDashboardData();
 
-    const topProducts = [
-        { name: "Multivitamin Tablets", sales: 234, revenue: "$7,016.66" },
-        { name: "Blood Pressure Monitor", sales: 156, revenue: "$7,798.44" },
-        { name: "Protein Powder", sales: 189, revenue: "$11,338.11" }
-    ];
+    if (!data) {
+        return (
+            <DashboardLayout userType="ecommerce" userName="HealthShop Admin">
+                <div className="p-8 text-center text-red-600 font-semibold">Failed to load ecommerce dashboard data.</div>
+            </DashboardLayout>
+        );
+    }
+
+    const { recentOrders, topProducts, stats } = data;
 
     return (
         <DashboardLayout userType="ecommerce" userName="HealthShop Admin">
@@ -74,8 +74,8 @@ export default function EcommerceDashboard() {
                                         <td className="p-3 font-semibold text-green-600">{order.amount}</td>
                                         <td className="p-3">
                                             <span className={`badge ${order.status === 'Delivered' ? 'badge-success' :
-                                                    order.status === 'Shipped' ? 'badge-info' :
-                                                        order.status === 'Processing' ? 'badge-warning' : 'badge-warning'
+                                                order.status === 'Shipped' ? 'badge-info' :
+                                                    order.status === 'Processing' ? 'badge-warning' : 'badge-warning'
                                                 }`}>
                                                 {order.status}
                                             </span>

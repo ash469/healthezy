@@ -1,5 +1,6 @@
 import { apiClient } from '../config';
 import type { Lab, Test } from '@/types/lab';
+import type { LabDashboardData } from '@/types/dashboard/lab';
 
 // Backend API response types
 interface TestApiResponse {
@@ -102,4 +103,16 @@ export async function searchTests(query: string): Promise<Test[]> {
     return allTests.filter(test =>
         test.name.toLowerCase().includes(query.toLowerCase())
     );
+}
+
+/**
+ * Get all data for the lab dashboard
+ */
+export async function getLabDashboardData(): Promise<LabDashboardData> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Fetch from centralized dummy data
+    const { labDashboardData } = await import('@/data/dashboard/lab');
+    return labDashboardData;
 }

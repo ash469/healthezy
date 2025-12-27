@@ -1,58 +1,15 @@
-'use client';
-
 import Link from 'next/link';
-import '../../dashboard.css'; 
+import '../../dashboard.css';
+import { getPharmacyDashboardData } from '@/services/pharmacy';
 
-export default function PharmacyDashboard() {
-    // Mock data for Pharmacy
-    const pharmacyInfo = {
-        name: "Pharmacy Name",
-        mobileNo: "9876543210",
-        emailId: "testmail00@gmail.com",
-        address: "123 Health Street, Med City"
-    };
+export default async function PharmacyDashboard() {
+    const data = await getPharmacyDashboardData();
 
-    const stats = {
-        ordersToday: 15,
-        pendingDeliveries: 15,
-        totalProducts: 15
-    };
+    if (!data) {
+        return <div className="p-8 text-center text-[#0f766e] font-semibold">Failed to load pharmacy dashboard data.</div>;
+    }
 
-    const recentOrders = [
-        {
-            id: 1,
-            name: "Ravi Sharma",
-            prescriptionId: "Prescription #2547",
-            status: "Pending", // Mock status
-            time: "11:30 AM",
-            badge: "bg-teal-500" // Not directly used in list but good for consistency
-        },
-        {
-            id: 2,
-            name: "Ravi Sharma",
-            prescriptionId: "Prescription #2547",
-            status: "Pending",
-            time: "11:30 AM",
-            badge: "bg-teal-500"
-        }
-    ];
-
-    const inventoryStatus = [
-        {
-            id: 1,
-            name: "Paracetamol 500mg",
-            type: "Tablets",
-            status: "In Stock",
-            statusColor: "bg-teal-600"
-        },
-        {
-            id: 2,
-            name: "Cough Syrup 100ml",
-            type: "Bottles",
-            status: "Low Stock",
-            statusColor: "bg-yellow-400 text-black"
-        }
-    ];
+    const { pharmacyInfo, stats, recentOrders, inventoryStatus } = data;
 
     return (
         <div className="patient-dashboard">

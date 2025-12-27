@@ -1,5 +1,6 @@
 import { apiClient } from '../config';
 import type { Pharmacy, Medicine } from '@/types/pharmacy';
+import type { PharmacyDashboardData } from '@/types/dashboard/pharmacy';
 
 // Backend API response types
 interface MedicineApiResponse {
@@ -107,4 +108,16 @@ export async function searchMedicines(query: string): Promise<Medicine[]> {
     return allMedicines.filter(m =>
         m.name.toLowerCase().includes(query.toLowerCase())
     );
+}
+
+/**
+ * Get all data for the pharmacy dashboard
+ */
+export async function getPharmacyDashboardData(): Promise<PharmacyDashboardData> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Fetch from centralized dummy data
+    const { pharmacyDashboardData } = await import('@/data/dashboard/pharmacy');
+    return pharmacyDashboardData;
 }

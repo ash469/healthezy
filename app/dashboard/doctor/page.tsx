@@ -1,62 +1,15 @@
-'use client';
-
 import Link from 'next/link';
 import '../../dashboard.css';
+import { getDoctorDashboardData } from '@/services/doctor';
 
-export default function DoctorDashboard() {
-    // Mock data for Doctor
-    const doctorInfo = {
-        name: "Doctor's Name",
-        age: 36,
-        gender: 'M',
-        speciality: 'General Physician | MD',
-        mobileNo: '9876543210',
-        emailId: 'testmail00@gmail.com',
-        avatar: '/doctor.png'
-    };
+export default async function DoctorDashboard() {
+    const data = await getDoctorDashboardData();
 
-    const stats = {
-        appointments: 15,
-        patients: 15,
-        reports: 15,
-        earnings: "12.5k"
-    };
+    if (!data) {
+        return <div className="p-8 text-center text-[#0f766e] font-semibold">Failed to load doctor dashboard data.</div>;
+    }
 
-    const todaysAppointments = [
-        {
-            id: 1,
-            name: "Mr. Sanjay",
-            condition: "Fever | Cold",
-            time: "11:30 AM",
-            status: "Confirmed",
-            badge: "bg-teal-500"
-        },
-        {
-            id: 2,
-            name: "Mr. Sanjay",
-            condition: "Fever | Cold",
-            time: "11:30 AM",
-            status: "Pending",
-            badge: "bg-orange-500"
-        }
-    ];
-
-    const recentPatients = [
-        {
-            id: 1,
-            name: "Rahul Mishra",
-            lastVisit: "3 Nov",
-            status: "Active",
-            statusColor: "bg-teal-500"
-        },
-        {
-            id: 2,
-            name: "Prince Mishra",
-            lastVisit: "30 Oct",
-            status: "Pending",
-            statusColor: "bg-yellow-500"
-        }
-    ];
+    const { doctorInfo, stats, todaysAppointments, recentPatients } = data;
 
     return (
         <div className="patient-dashboard"> {/* Reusing class for background and padding */}
@@ -79,7 +32,7 @@ export default function DoctorDashboard() {
                     <div className="profile-card">
                         <div className="profile-avatar">
                             {/* Use avatar image or fallback */}
-                            <img src={doctorInfo.avatar} alt={doctorInfo.name} onError={(e) => e.currentTarget.style.display = 'none'} />
+                            <img src={doctorInfo.avatar} alt={doctorInfo.name} />
                             <div className="w-full h-full bg-white flex items-center justify-center text-gray-400">
                                 <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
                             </div>

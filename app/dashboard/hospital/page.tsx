@@ -1,57 +1,15 @@
-'use client';
-
 import Link from 'next/link';
-import '../../dashboard.css'; 
+import '../../dashboard.css';
+import { getHospitalDashboardData } from '@/services/hospital';
 
-export default function HospitalDashboard() {
-    // Mock data for Hospital
-    const hospitalInfo = {
-        name: "Hospital's Name",
-        speciality: "Cardiology | Neurology | Oncology",
-        mobileNo: "9876543210",
-        emailId: "testmail00@gmail.com",
-        address: "123 Health Street, Med City"
-    };
+export default async function HospitalDashboard() {
+    const data = await getHospitalDashboardData();
 
-    const stats = {
-        appointmentsToday: 15,
-        activeDoctors: 15,
-        reportsProcessed: 15
-    };
+    if (!data) {
+        return <div className="p-8 text-center text-[#0f766e] font-semibold">Failed to load hospital dashboard data.</div>;
+    }
 
-    const todaysAppointments = [
-        {
-            id: 1,
-            name: "Ravi Sharma",
-            details: "Cardiology • Dr. Rajesh Kumar",
-            time: "11:30 AM",
-            badge: "bg-teal-500"
-        },
-        {
-            id: 2,
-            name: "Ravi Sharma",
-            details: "Cardiology • Dr. Vinay Kumar",
-            time: "11:30 AM",
-            badge: "bg-teal-500"
-        }
-    ];
-
-    const activeDoctors = [
-        {
-            id: 1,
-            name: "Dr. Mehra",
-            speciality: "General Physician",
-            status: "Active",
-            statusColor: "bg-teal-500"
-        },
-        {
-            id: 2,
-            name: "Dr. Mehra",
-            speciality: "General Physician",
-            status: "Offline",
-            statusColor: "bg-yellow-500"
-        }
-    ];
+    const { hospitalInfo, stats, todaysAppointments, activeDoctors } = data;
 
     return (
         <div className="patient-dashboard">

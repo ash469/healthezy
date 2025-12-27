@@ -1,59 +1,15 @@
-'use client';
-
 import Link from 'next/link';
-import '../../dashboard.css'; 
+import '../../dashboard.css';
+import { getLabDashboardData } from '@/services/lab';
 
-export default function LabDashboard() {
-    // Mock data for Lab
-    const labInfo = {
-        name: "Lab's Name",
-        speciality: "Blood Test | X-Ray | Scan | Urine Test | MRI/CT Scan",
-        mobileNo: "9876543210",
-        emailId: "labemail00@gmail.com",
-        avatar: "/lab-avatar.png" 
-    };
+export default async function LabDashboard() {
+    const data = await getLabDashboardData();
 
-    const stats = {
-        testsToday: 15,
-        reportsPending: 15,
-        totalPatients: 15
-    };
+    if (!data) {
+        return <div className="p-8 text-center text-[#0f766e] font-semibold">Failed to load lab dashboard data.</div>;
+    }
 
-    const upcomingBookings = [
-        {
-            id: 1,
-            name: "Mr. Sanjay",
-            test: "Fever | Cold",
-            time: "11:30 AM",
-            status: "Confirmed",
-            badge: "bg-teal-500"
-        },
-        {
-            id: 2,
-            name: "Mr. Sanjay",
-            test: "Fever | Cold",
-            time: "11:30 AM",
-            status: "Pending",
-            badge: "bg-orange-500"
-        }
-    ];
-
-    const pendingReports = [
-        {
-            id: 1,
-            name: "Rahul Mishra",
-            test: "CBC Test",
-            status: "Active",
-            statusColor: "bg-teal-500"
-        },
-        {
-            id: 2,
-            name: "Prince Mishra",
-            test: "CBC Test",
-            status: "Pending",
-            statusColor: "bg-yellow-500"
-        }
-    ];
+    const { labInfo, stats, upcomingBookings, pendingReports } = data;
 
     return (
         <div className="patient-dashboard">
@@ -76,7 +32,7 @@ export default function LabDashboard() {
                     <div className="profile-card">
                         <div className="profile-avatar">
                             {/* Use avatar image or fallback */}
-                            <img src={labInfo.avatar} alt={labInfo.name} onError={(e) => e.currentTarget.style.display = 'none'} />
+                            <img src={labInfo.avatar} alt={labInfo.name} />
                             <div className="w-full h-full bg-white flex items-center justify-center text-gray-400">
                                 <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M19.424 19.536a2 2 0 01-2.828 0L9.939 12.879l5.657-5.657 6.657 6.657a2 2 0 010 2.828l-2.829 2.829zM4.929 15.536l-2.829-2.829a2 2 0 010-2.828l6.657-6.657 5.657 5.657-9.485 9.485z" /></svg>
                             </div>

@@ -1,5 +1,6 @@
 import { apiClient } from '../config';
 import type { Doctor, AppointmentSchedule } from '@/types/doctor';
+import type { DoctorDashboardData } from '@/types/dashboard/doctor';
 
 // Backend API response type (this is what the real API returns)
 interface DoctorApiResponse {
@@ -91,4 +92,16 @@ export async function getDoctorSchedule(doctorId: number): Promise<AppointmentSc
     // For now, return dummy data
     const { appointmentSchedules } = await import('@/data/appointments');
     return appointmentSchedules.find(apt => apt.doctorId === doctorId) || null;
+}
+
+/**
+ * Get all data for the doctor dashboard
+ */
+export async function getDoctorDashboardData(): Promise<DoctorDashboardData> {
+    // Simulate API delay
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    // Fetch from centralized dummy data
+    const { doctorDashboardData } = await import('@/data/dashboard/doctor');
+    return doctorDashboardData;
 }
