@@ -118,12 +118,10 @@ export default function RootLayout({
       </head>
       <body className={inter.className}>
         <AuthProvider>
-          <RegisterServiceWorker />
           <Navbar />
-          <main className="min-h-screen pt-20">
-            {children}
-          </main>
+          {children}
           <Footer />
+          <RegisterServiceWorker />
         </AuthProvider>
       </body>
     </html>

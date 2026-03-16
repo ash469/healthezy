@@ -66,7 +66,7 @@ export default async function EcommerceDashboard() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {recentOrders.map((order) => (
+                                {recentOrders.slice(0, 3).map((order) => (
                                     <tr key={order.id} className="border-b hover:bg-gray-50">
                                         <td className="p-3 font-semibold">{order.id}</td>
                                         <td className="p-3">{order.customer}</td>
@@ -95,7 +95,7 @@ export default async function EcommerceDashboard() {
                     <div className="card">
                         <h2 className="text-2xl font-bold mb-4">Top Products</h2>
                         <div className="space-y-3">
-                            {topProducts.map((product, index) => (
+                            {topProducts.slice(0, 3).map((product, index) => (
                                 <div key={index} className="p-4 bg-gray-50 rounded-lg">
                                     <h3 className="font-semibold mb-2">{product.name}</h3>
                                     <div className="flex items-center justify-between text-sm">

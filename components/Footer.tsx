@@ -1,8 +1,18 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import './Footer.css';
 
 export default function Footer() {
+    const pathname = usePathname();
+
+    // Hide Footer on admin and dashboard routes
+    if (pathname?.startsWith('/admin') || pathname?.startsWith('/dashboard')) {
+        return null;
+    }
+
     return (
         <footer className="bg-[#007c87] text-white">
             <div className="footer-container">
@@ -43,7 +53,7 @@ export default function Footer() {
                             <h3 className="text-lg font-medium mb-4">Follow Us</h3>
                             <div className="flex gap-4">
                                 <a
-                                    href="https://instagram.com"
+                                    href="https://www.instagram.com/healthezy.in?igsh=MW53MmkyaWUyZHRzcg=="
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="hover:opacity-80 transition-opacity"
@@ -52,22 +62,13 @@ export default function Footer() {
                                     <Image src="/icons/instagram.svg" alt="Instagram" width={24} height={24} />
                                 </a>
                                 <a
-                                    href="https://twitter.com"
+                                    href="https://www.linkedin.com/company/sustainable-care-tech-chain-pvt-ltd/"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="hover:opacity-80 transition-opacity"
-                                    aria-label="Twitter"
+                                    aria-label="LinkedIn"
                                 >
-                                    <Image src="/icons/twitter.svg" alt="Twitter" width={24} height={24} />
-                                </a>
-                                <a
-                                    href="https://facebook.com"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="hover:opacity-80 transition-opacity"
-                                    aria-label="Facebook"
-                                >
-                                    <Image src="/icons/facebook.svg" alt="Facebook" width={24} height={24} />
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
                                 </a>
                             </div>
                         </div>
@@ -174,7 +175,7 @@ export default function Footer() {
                         <h3 className="text-lg font-medium mb-4">Follow Us</h3>
                         <div className="flex justify-center gap-6">
                             <a
-                                href="https://instagram.com"
+                                href="https://www.instagram.com/healthezy.in?igsh=MW53MmkyaWUyZHRzcg=="
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="hover:opacity-80 transition-opacity"
@@ -184,23 +185,15 @@ export default function Footer() {
                             </a>
 
                             <a
-                                href="https://twitter.com"
+                                href="https://www.linkedin.com/company/sustainable-care-tech-chain-pvt-ltd/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="hover:opacity-80 transition-opacity"
-                                aria-label="Twitter"
+                                className="hover:opacity-80 transition-opacity flex items-center justify-center bg-white rounded flex-shrink-0"
+                                aria-label="LinkedIn"
                             >
-                                <Image src="/icons/twitter.svg" alt="Twitter" width={32} height={32} />
-                            </a>
-
-                            <a
-                                href="https://facebook.com"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="hover:opacity-80 transition-opacity"
-                                aria-label="Facebook"
-                            >
-                                <Image src="/icons/facebook.svg" alt="Facebook" width={32} height={32} />
+                                <div className="w-8 h-8 rounded-full bg-[#0077b5] flex items-center justify-center text-white">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>
+                                </div>
                             </a>
                         </div>
                     </div>

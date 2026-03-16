@@ -30,16 +30,10 @@ const UserMenu: React.FC = () => {
     };
 
     const getDashboardPath = () => {
-        if (!user) return '/';
-        const dashboardRoutes: Record<string, string> = {
-            patient: '/dashboard/patient',
-            doctor: '/dashboard/doctor',
-            lab: '/dashboard/lab',
-            hospital: '/dashboard/hospital',
-            pharmacy: '/dashboard/pharmacy',
-            ecommerce: '/dashboard/ecommerce'
-        };
-        return dashboardRoutes[user.userType] || '/';
+        const { resolveDashboardPath } = require('@/services/auth');
+        const storedRole = typeof window !== 'undefined' ? localStorage.getItem('role') : null;
+        const role = user?.role || storedRole || '';
+        return resolveDashboardPath(role);
     };
 
     if (!isAuthenticated || !user) {
@@ -61,6 +55,21 @@ const UserMenu: React.FC = () => {
         );
     }
 
+    const getFullName = () => {
+        if ('name' in user) return user.name;
+        if ('first_name' in user) return `${user.first_name} ${user.last_name || ''}`.trim();
+        return (user as any).email;
+    };
+
+    const getInitial = () => {
+        if ('name' in user) return user.name.charAt(0).toUpperCase();
+        if ('first_name' in user) return user.first_name.charAt(0).toUpperCase();
+        return (user as any).email.charAt(0).toUpperCase();
+    };
+
+    const fullName = getFullName();
+    const initial = getInitial();
+
     return (
         <div className="relative" ref={menuRef}>
             <button
@@ -68,11 +77,11 @@ const UserMenu: React.FC = () => {
                 className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
                 <div className="w-8 h-8 bg-[#0D5C63] text-white rounded-full flex items-center justify-center text-sm font-semibold">
-                    {user.name.charAt(0).toUpperCase()}
+                    {initial}
                 </div>
                 <div className="hidden md:block text-left">
-                    <p className="text-sm font-medium text-gray-900">{user.name}</p>
-                    <p className="text-xs text-gray-500 capitalize">{user.userType}</p>
+                    <p className="text-sm font-medium text-gray-900">{fullName}</p>
+                    <p className="text-xs text-gray-500 capitalize">{user.role?.toLowerCase()}</p>
                 </div>
                 <svg
                     className={`w-4 h-4 text-gray-600 transition-transform ${isOpen ? 'rotate-180' : ''}`}
@@ -87,9 +96,9 @@ const UserMenu: React.FC = () => {
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-1 z-50">
                     <div className="px-4 py-3 border-b border-gray-200">
-                        <p className="text-sm font-medium text-gray-900">{user.name}</p>
+                        <p className="text-sm font-medium text-gray-900">{fullName}</p>
                         <p className="text-xs text-gray-500">{user.email}</p>
-                        <p className="text-xs text-gray-500">{user.phone}</p>
+                        <p className="text-xs text-gray-500">{user.phone_number}</p>
                     </div>
 
                     <Link
@@ -105,7 +114,7 @@ const UserMenu: React.FC = () => {
                         </div>
                     </Link>
 
-                    <Link
+                    {/* <Link
                         href="/profile"
                         onClick={() => setIsOpen(false)}
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
@@ -116,7 +125,7 @@ const UserMenu: React.FC = () => {
                             </svg>
                             Profile
                         </div>
-                    </Link>
+                    </Link> */}
 
                     <button
                         onClick={handleLogout}

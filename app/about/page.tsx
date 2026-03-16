@@ -27,9 +27,14 @@ const AboutPage = () => {
                     </div>
                     <div className="about-content">
                         <h2 className="about-title">About Us</h2>
-                        <p className="about-description">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur quis libero tempor, convallis nisi vel, accumsan lacus. Nam quis fringilla ipsum. Nulla in sapien et nunc finibus rutrum ut nec nibh. Morbi dictum fringilla neque a fermentum. Integer nec leo eget nisl pulvinar sagittis. Donec id turpis libero. Praesent quam turpis, ultricies ut erat a, efficitur accumsan libero.
-                        </p>
+                        <div className="about-description">
+                            <p style={{ marginBottom: '1rem' }}>
+                                Healthezy is a unified healthcare platform designed to simplify how people access and manage healthcare services. Our mission is to make healthcare accessible, transparent, and convenient for everyone by connecting patients with trusted healthcare providers on a single digital platform.
+                            </p>
+                            <p>
+                                Healthezy brings together clinics, hospitals, laboratories, pharmacies, and healthcare brands into one ecosystem so that users can easily discover, compare, and access healthcare services in their locality.
+                            </p>
+                        </div>
                     </div>
                 </section>
                 <section className="about-section reverse">
@@ -40,10 +45,22 @@ const AboutPage = () => {
                         />
                     </div>
                     <div className="about-content">
-                        <h2 className="about-title">Why Choose Us ?</h2>
-                        <p className="about-description">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur quis libero tempor, convallis nisi vel, accumsan lacus. Nam quis fringilla ipsum. Nulla in sapien et nunc finibus rutrum ut nec nibh. Morbi dictum fringilla neque a fermentum. Integer nec leo eget nisl pulvinar sagittis. Donec id turpis libero. Praesent quam turpis, ultricies ut erat a, efficitur accumsan libero.
-                        </p>
+                        <h2 className="about-title">What We Do</h2>
+                        <div className="about-description">
+                            <p style={{ marginBottom: '0.5rem' }}>Our platform helps patients with:</p>
+                            <ul style={{ listStyleType: 'disc', paddingLeft: '1.5rem', marginBottom: '1rem' }}>
+                                <li style={{ marginBottom: '0.25rem' }}>Finding nearby doctors, clinics, labs, and pharmacies</li>
+                                <li style={{ marginBottom: '0.25rem' }}>Accessing healthcare services quickly and efficiently</li>
+                                <li style={{ marginBottom: '0.25rem' }}>Managing health records and prescriptions</li>
+                                <li style={{ marginBottom: '0.25rem' }}>Getting reliable healthcare information and support</li>
+                            </ul>
+                            <p style={{ marginBottom: '1rem' }}>
+                                At the same time, Healthezy empowers healthcare providers with digital tools to manage their services, improve patient engagement, and streamline operations.
+                            </p>
+                            <p>
+                                We believe that healthcare should be simple, reliable, and available when people need it the most.
+                            </p>
+                        </div>
                     </div>
                 </section>
 

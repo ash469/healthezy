@@ -1,131 +1,139 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { useState } from 'react';
-import { getHospitalById } from '@/data/hospitals';
-import { getDoctorsByHospitalId } from '@/data/doctors';
-import '@/components/doctors/Doctors.css'; // Reusing exact CSS
+import { useState, useEffect } from 'react';
+import { getHospitalById, getDoctorsInHospital } from '@/services/hospital';
+import DoctorCard from '@/components/doctors/DoctorCard';
+import Image from 'next/image';
 import Link from 'next/link';
 
-export default function HospitalDoctorsPage() {
+export default function HospitalDetailsPage() {
     const params = useParams();
     const router = useRouter();
     const hospitalIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
     const hospitalId = parseInt(hospitalIdStr, 10);
-    const hospital = getHospitalById(hospitalId);
 
-    const [filterGender, setFilterGender] = useState<string>('Gender');
-    const [sortBy, setSortBy] = useState<string>('Sort by');
+    const [hospital, setHospital] = useState<any>(null);
+    const [doctors, setDoctors] = useState<any[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
+    const [showDoctors, setShowDoctors] = useState<boolean>(false); // Toggle to show doctors
+
+    useEffect(() => {
+        if (!hospitalId) return;
+
+        async function fetchHospitalData() {
+            setLoading(true);
+            try {
+                const hospitalData = await getHospitalById(hospitalId);
+                setHospital(hospitalData);
+            } catch (error) {
+                console.error("Failed to fetch hospital details", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchHospitalData();
+    }, [hospitalId]);
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center min-h-[400px]">
+                <div className="text-teal-600">Loading Hospital Details...</div>
+            </div>
+        );
+    }
 
     if (!hospital) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[400px]">
                 <h2 className="text-xl font-bold text-gray-800 mb-2">Hospital Not Found</h2>
-                <button
-                    onClick={() => router.push('/hospital')}
-                    className="bg-[#0e8a93] text-white px-6 py-2 rounded-lg hover:bg-[#0b6c73] transition-colors"
+                <Link
+                    href="/hospital"
+                    className="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition-colors"
                 >
                     Back to Hospitals
-                </button>
+                </Link>
             </div>
         );
     }
 
-    // Fetch doctors for this hospital using the helper function
-    const doctors = getDoctorsByHospitalId(hospitalId);
-
-    // Filter Logic
-    const filteredDoctors = doctors.filter((doctor) => {
-        if (filterGender === 'Gender') return true;
-        return doctor.gender === filterGender;
-    });
-
-    // Sort Logic
-    const sortedDoctors = [...filteredDoctors].sort((a, b) => {
-        if (sortBy === 'Fees: Low to High') {
-            return (a.consultationFee || 0) - (b.consultationFee || 0);
-        } else if (sortBy === 'Fees: High to Low') {
-            return (b.consultationFee || 0) - (a.consultationFee || 0);
-        } else if (sortBy === 'Experience') {
-            const expA = a.experienceYears || parseInt(a.experience || '0');
-            const expB = b.experienceYears || parseInt(b.experience || '0');
-            return expB - expA;
-        }
-        return 0;
-    });
+    const logoUrl = hospital.logo_url || hospital.logoUrl || '/hospital.png';
 
     return (
-        <div className="doctors-container">
-
-            <div className="doctors-header">
-                <h1 className="doctors-title">Doctors at {hospital.name}</h1>
-
-                <div className="doctors-filters">
-                    <div className="filter-group">
-                        <label className="filter-label">Filter</label>
-                        <select
-                            className="filter-select"
-                            value={filterGender}
-                            onChange={(e) => setFilterGender(e.target.value)}
-                        >
-                            <option>Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                        </select>
+        <div className="container mx-auto px-4 py-8 max-w-6xl">
+            <div className="bg-white rounded-xl shadow-md overflow-hidden mb-8">
+                <div className="md:flex">
+                    <div className="md:w-1/3 bg-gray-50 flex items-center justify-center p-8">
+                        <Image
+                            src={logoUrl}
+                            alt={hospital.name}
+                            width={200}
+                            height={200}
+                            className="object-contain"
+                            unoptimized={true}
+                        />
                     </div>
-                    <div className="filter-group">
-                        <label className="filter-label">Sort by</label>
-                        <select
-                            className="filter-select"
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value)}
-                        >
-                            <option>Sort by</option>
-                            <option>Fees: Low to High</option>
-                            <option>Fees: High to Low</option>
-                            <option>Experience</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
+                    <div className="md:w-2/3 p-8">
+                        <div className="uppercase tracking-wide text-sm text-teal-600 font-bold mb-1">{hospital.type} Hospital</div>
+                        <h1 className="block mt-1 text-3xl leading-tight font-extrabold text-gray-900">{hospital.name}</h1>
+                        <p className="mt-2 text-gray-500">{hospital.address}, {hospital.city}, {hospital.state} - {hospital.zip_code}</p>
 
-            <div className="doctors-list">
-                {sortedDoctors.length > 0 ? (
-                    sortedDoctors.map((doctor) => (
+                        <div className="mt-4">
+                            <h3 className="text-lg font-semibold text-gray-700">About</h3>
+                            <p className="mt-2 text-gray-600">{hospital.description}</p>
+                        </div>
 
-                        <div key={doctor.id} className="doctor-card">
-                            <div className="doctor-info-section">
-                                <div className="doctor-image-container">
-                                    <img
-                                        src={doctor.photoUrl || '/doctor.png'}
-                                        alt={doctor.fullName || 'Doctor'}
-                                        className="doctor-image"
-                                    />
-                                </div>
-                                <div className="doctor-details">
-                                    <h3 className="doctor-name">{doctor.fullName}</h3>
-                                    <p className="doctor-specialty">{doctor.specialization}</p>
-                                    <p className="doctor-hospital">{hospital.name} | Fees - ₹{doctor.consultationFee}/-</p>
-                                    <div className="doctor-rating">
-                                        <span className="rating-tag">{doctor.rating} ★</span>
-                                    </div>
-                                </div>
+                        <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex items-center text-gray-600">
+                                <span className="font-bold mr-2">Phone:</span> {hospital.phone_number}
                             </div>
+                            <div className="flex items-center text-gray-600">
+                                <span className="font-bold mr-2">Email:</span> {hospital.email}
+                            </div>
+                            <div className="flex items-center text-gray-600">
+                                <span className="font-bold mr-2">Emergency:</span> {hospital.emergency_number}
+                            </div>
+                            <div className="flex items-center text-gray-600">
+                                <span className="font-bold mr-2">Total Beds:</span> {hospital.total_beds}
+                            </div>
+                            <div className="flex items-center text-gray-600">
+                                <span className="font-bold mr-2">Available Beds:</span> {hospital.available_beds}
+                            </div>
+                            <div className="flex items-center text-gray-600">
+                                <span className="font-bold mr-2">Website:</span> {hospital.website}
+                            </div>
+                        </div>
 
+                        <div className="mt-8">
                             <Link
-                                href={`/hospital/${hospital.id}/doctors/${doctor.id}/book`}
-                                className="book-btn"
+                                href={`/hospital/${hospital.id}/doctors`}
+                                className="action-btn"
                             >
                                 Book Appointment
                             </Link>
                         </div>
-                    ))
-                ) : (
-                    <div className="text-center py-10 text-gray-500">
-                        No doctors found at this hospital.
                     </div>
-                )}
+                </div>
             </div>
+
+            {showDoctors && (
+                <div className="animate-fade-in-up">
+                    <h2 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Doctors at {hospital.name}</h2>
+
+                    {doctors.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {doctors.map((doctor) => (
+                                <DoctorCard key={doctor.id} doctor={doctor} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-10 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+                            <p className="text-gray-500 text-lg">No doctors found for this hospital.</p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }

@@ -110,7 +110,7 @@ export default async function PharmacyDashboard() {
                                 <Link href="#" className="view-all-link">View All</Link>
                             </div>
                             <div className="appointments-list">
-                                {recentOrders.map((order) => (
+                                {recentOrders.slice(0, 3).map((order) => (
                                     <div key={order.id} className="appointment-item">
                                         <h3 className="appointment-doctor text-black">{order.name}</h3>
                                         <p className="appointment-date">{order.prescriptionId}</p>
@@ -127,7 +127,7 @@ export default async function PharmacyDashboard() {
                                 <Link href="#" className="view-all-link">View All</Link>
                             </div>
                             <div className="patients-list">
-                                {inventoryStatus.map((item) => (
+                                {inventoryStatus.slice(0, 3).map((item) => (
                                     <div key={item.id} className="patient-item">
                                         <h3 className="patient-name">{item.name}</h3>
                                         <p className="patient-visit">{item.type}</p>

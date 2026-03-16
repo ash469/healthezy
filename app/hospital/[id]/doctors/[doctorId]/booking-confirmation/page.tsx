@@ -6,8 +6,10 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import { Document, Page, Text, View, StyleSheet, Image as PDFImage, pdf } from '@react-pdf/renderer';
 import '@/components/doctors/Confirmation.css';
-import { getHospitalById } from '@/data/hospitals';
-import { getDoctorById } from '@/data/doctors';
+import { getHospitalById } from '@/services/hospital';
+import { getDoctorById } from '@/services/doctor';
+import type { Hospital } from '@/types/hospital';
+import type { Doctor } from '@/types/doctor';
 
 // --- PDF Styles and Document Definition ---
 const styles = StyleSheet.create({
@@ -97,12 +99,13 @@ const AppointmentPDF = ({ data }: { data: any }) => (
             <Text style={styles.watermark}>Healthezy</Text>
 
             <View style={styles.imageContainer}>
-                <PDFImage src={data.hospital.imageUrl} />
+                <PDFImage src={data.hospital.logo_url || '/hospital.png'} />
             </View>
 
             <Text style={styles.doctorName}>{data.hospital.name}</Text>
             <Text style={styles.doctorSpecialty}>{data.hospital.address}</Text>
-            <Text style={styles.doctorId}>Rating: {data.hospital.rating}</Text>
+            {/* Rating might not be in Hospital type yet, accessing safely or casting if needed, but for now just commenting out or using if exists */}
+            {/* <Text style={styles.doctorId}>Rating: {data.hospital.rating}</Text> */}
 
             <View style={styles.divider} />
 
@@ -132,15 +135,45 @@ export default function HospitalBookingConfirmationPage() {
     const hospitalIdNum = parseInt(Array.isArray(params.id) ? params.id[0] : (params.id || ''), 10);
     const doctorIdNum = parseInt(Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || ''), 10);
 
-    const hospital = getHospitalById(hospitalIdNum);
-    const doctor = getDoctorById(doctorIdNum);
+    const [hospital, setHospital] = useState<Hospital | null>(null);
+    const [doctor, setDoctor] = useState<Doctor | null>(null);
+    const [loading, setLoading] = useState(true);
 
+    const patientName = searchParams.get('patientName') || 'Guest Patient';
     const date = searchParams.get('date') || '25 Nov 2025 | Tuesday';
     const slot = searchParams.get('slot') || '10:00';
 
     useEffect(() => {
         setIsClient(true);
-    }, []);
+        const fetchData = async () => {
+            try {
+                if (hospitalIdNum) {
+                    const hospData = await getHospitalById(hospitalIdNum);
+                    setHospital(hospData);
+                }
+                if (doctorIdNum) {
+                    const docData = await getDoctorById(doctorIdNum);
+                    setDoctor(docData);
+                }
+            } catch (error) {
+                console.error("Failed to fetch booking details:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [hospitalIdNum, doctorIdNum]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#009ca6]"></div>
+                    <p className="mt-4 text-gray-600">Loading booking details...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!hospital || !doctor) {
         return <div>Hospital or Doctor not found</div>;
@@ -149,10 +182,10 @@ export default function HospitalBookingConfirmationPage() {
     const bookingDetails = {
         hospital: {
             ...hospital,
-            imageUrl: hospital?.logoUrl || '/hospital.png'
+            imageUrl: hospital?.logo_url || '/hospital.png'
         },
-        doctorName: doctor?.fullName || 'Doctor',
-        patient: 'Mr. Rahul Mishra',
+        doctorName: doctor?.full_name || 'Doctor',
+        patient: patientName,
         date: date,
         time: slot,
         slot: 'Confirmed Slot'
@@ -185,7 +218,7 @@ export default function HospitalBookingConfirmationPage() {
                 <div className="confirmation-doctor-section">
                     <div className="conf-doc-img">
                         <Image
-                            src={hospital?.logoUrl || '/hospital.png'}
+                            src={hospital?.logo_url || '/hospital.png'}
                             alt={hospital?.name || 'Hospital'}
                             width={130}
                             height={130}
@@ -193,7 +226,7 @@ export default function HospitalBookingConfirmationPage() {
                     </div>
                     <h3>{hospital?.name}</h3>
                     <p>{hospital?.address}</p>
-                    <p className="text-sm mt-2 font-semibold text-[#0e5c63]">Doctor: {doctor?.fullName}</p>
+                    <p className="text-sm mt-2 font-semibold text-[#0e5c63]">Doctor: {doctor?.full_name}</p>
                 </div>
 
                 <div className="confirmation-details-section">

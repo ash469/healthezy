@@ -1,15 +1,78 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import '../../dashboard.css';
 import { getDoctorDashboardData } from '@/services/doctor';
+import type { DoctorDashboardData } from '@/types/dashboard/doctor';
+import DoctorProfileModal from '@/components/dashboard/doctor/DoctorProfileModal';
+import ResetPasswordModal from '@/components/dashboard/doctor/ResetPasswordModal';
 
-export default async function DoctorDashboard() {
-    const data = await getDoctorDashboardData();
+export default function DoctorDashboard() {
+    const [data, setData] = useState<DoctorDashboardData | null>(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+    const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] = useState(false);
 
-    if (!data) {
-        return <div className="p-8 text-center text-[#0f766e] font-semibold">Failed to load doctor dashboard data.</div>;
+    const fetchData = async () => {
+        try {
+            setLoading(true);
+            const result = await getDoctorDashboardData();
+            if (result) {
+                setData(result);
+            } else {
+                setError('Failed to load doctor dashboard data.');
+            }
+        } catch (err) {
+            console.error("Dashboard error:", err);
+            setError('An unexpected error occurred.');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="flex flex-col items-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600 mb-4"></div>
+                    <p className="text-teal-600 font-medium">Loading your dashboard...</p>
+                </div>
+            </div>
+        );
     }
 
-    const { doctorInfo, stats, todaysAppointments, recentPatients } = data;
+    if (error || !data) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="bg-white p-8 rounded-xl shadow-md text-center max-w-md">
+                    <div className="text-red-500 text-5xl mb-4">⚠️</div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">Oops!</h2>
+                    <p className="text-gray-600 mb-6">{error || 'Something went wrong while loading your data.'}</p>
+                    <button
+                        onClick={() => window.location.reload()}
+                        className="bg-teal-600 text-white px-6 py-2 rounded-lg hover:bg-teal-700 transition"
+                    >
+                        Try Again
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    const { userInfo, doctorInfo, stats, todaysAppointments, recentPatients } = data;
+
+    const fullName = userInfo
+        ? ('first_name' in userInfo ? `${userInfo.first_name} ${userInfo.last_name}` : userInfo.name)
+        : doctorInfo.name;
+    const userRole = userInfo?.role || 'Doctor';
+    const userEmail = userInfo?.email || doctorInfo.emailId;
+    const userPhone = userInfo?.phone_number || doctorInfo.mobileNo;
 
     return (
         <div className="patient-dashboard"> {/* Reusing class for background and padding */}
@@ -17,31 +80,31 @@ export default async function DoctorDashboard() {
                 <h1 className="text-4xl md:text-5xl font-bold text-[#0f766e] mb-8">
                     Doctor Dashboard
                 </h1>
-                <button className="edit-profile-btn bg-[#0d5c63]">
+                <button
+                    onClick={() => setIsProfileModalOpen(true)}
+                    className="edit-profile-btn bg-[#0d5c63] flex items-center gap-2 px-4 py-2 rounded-lg text-white hover:bg-[#0a4a4f] transition-colors shadow-lg"
+                >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
                     Edit Profile
                 </button>
             </div>
-
-            {/* Main Grid Layout */}
             <div className="dashboard-grid">
-                {/* Left Column - Profile & Actions */}
                 <div className="profile-section">
                     <div className="profile-card">
                         <div className="profile-avatar">
-                            {/* Use avatar image or fallback */}
-                            <img src={doctorInfo.avatar} alt={doctorInfo.name} />
-                            <div className="w-full h-full bg-white flex items-center justify-center text-gray-400">
-                                <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                            </div>
+                            <img src={doctorInfo.avatar} alt={fullName} />
                         </div>
-                        <h3 className="profile-name">{doctorInfo.name}</h3>
+                        <h3 className="profile-name">{fullName}</h3>
                         <div className="profile-details">
                             <div className="detail-row">
-                                <span className="detail-label">Age:</span>
-                                <span className="detail-value">{doctorInfo.age}</span>
+                                <span className="detail-label">Role:</span>
+                                <span className="detail-value capitalize">{userRole.toLowerCase()}</span>
+                            </div>
+                            <div className="detail-row">
+                                <span className="detail-label">Experience:</span>
+                                <span className="detail-value">{doctorInfo.experience} years</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Gender:</span>
@@ -53,29 +116,34 @@ export default async function DoctorDashboard() {
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Mobile No:</span>
-                                <span className="detail-value">{doctorInfo.mobileNo}</span>
+                                <span className="detail-value">{userPhone}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Email Id:</span>
-                                <span className="detail-value text-xs break-all">{doctorInfo.emailId}</span>
+                                <span className="detail-value text-xs break-all">{userEmail}</span>
                             </div>
                         </div>
                     </div>
-
-                    {/* Quick Actions (Replacing Quick Links) */}
                     <div className="quick-links-card">
                         <h3 className="section-title">Quick Actions</h3>
-                        <button className="quick-link-btn teal">
+                        <Link href="/dashboard/doctor/appointments" className="quick-link-btn teal block text-center">
                             Manage Appointments
-                        </button>
-                        <button className="quick-link-btn teal">
-                            Generate Slots
+                        </Link>
+                        <Link href="/dashboard/doctor/schedule" className="quick-link-btn teal block text-center">
+                            Manage Weekly Schedule
+                        </Link>
+                        <Link href="/dashboard/doctor/exceptions" className="quick-link-btn teal block text-center mt-2">
+                            Add Leave / Special Hours
+                        </Link>
+                        <button
+                            onClick={() => setIsResetPasswordModalOpen(true)}
+                            className="quick-link-btn bg-teal-50 text-teal-700 border border-teal-200 block w-full text-center mt-2 hover:bg-teal-100 transition-colors py-2"
+                        >
+                            Reset Password
                         </button>
                     </div>
-
-                    {/* Upload Prescription (Replacing Insurance Card style) */}
                     <div className="insurance-card">
-                        <h3 className="section-title">Upload Prescription</h3>
+                        <h3 className="section-title">Upload Prescription / Report</h3>
                         <div className="claims-count mb-4">Select File</div>
 
                         <div className="flex flex-col gap-3">
@@ -88,74 +156,84 @@ export default async function DoctorDashboard() {
                         </div>
                     </div>
                 </div>
-
-                {/* Right Column - Stats and Content */}
                 <div className="content-section">
-                    {/* Stats Grid */}
                     <div className="stats-grid">
                         <div className="stat-card bg-gradient-to-br from-teal-400 to-teal-500">
                             <div className="stat-number">{stats.appointments}</div>
                             <div className="stat-label">Appointments</div>
-                            <Link href="#" className="stat-link">View All</Link>
+                            <Link href="/dashboard/doctor/appointments" className="stat-link">View All</Link>
                         </div>
                         <div className="stat-card bg-gradient-to-br from-blue-400 to-blue-500">
                             <div className="stat-number">{stats.patients}</div>
-                            <div className="stat-label">Patients</div>
-                            <Link href="#" className="stat-link">View All</Link>
+                            <div className="stat-label">My Patients</div>
+                            <Link href="/dashboard/doctor/patients" className="stat-link">View All</Link>
                         </div>
                         <div className="stat-card bg-gradient-to-br from-purple-400 to-purple-500">
                             <div className="stat-number">{stats.reports}</div>
-                            <div className="stat-label">Reports</div>
-                            <Link href="#" className="stat-link">View All</Link>
+                            <div className="stat-label">Prescriptions</div>
+                            <Link href="/dashboard/doctor/#" className="stat-link">View All</Link>
                         </div>
-                        <div className="stat-card bg-gradient-to-br from-pink-400 to-pink-500">
+                        {/* <div className="stat-card bg-gradient-to-br from-pink-400 to-pink-500">
                             <div className="stat-number">{stats.earnings}</div>
-                            <div className="stat-label">Earnings</div>
-                            <Link href="#" className="stat-link">View All</Link>
-                        </div>
+                            <div className="stat-label">Total Earnings</div>
+                            <Link href="/dashboard/doctor/#" className="stat-link">View Details</Link>
+                        </div> */}
                     </div>
-
-                    {/* Two Column Grid */}
                     <div className="two-column-grid">
-                        {/* Today's Appointments */}
                         <div className="content-card">
                             <div className="card-header">
                                 <h2 className="card-title">Today's Appointment</h2>
-                                <Link href="#" className="view-all-link">View All</Link>
+                                <Link href="/dashboard/doctor/appointments" className="view-all-link">View All</Link>
                             </div>
                             <div className="appointments-list">
-                                {todaysAppointments.map((apt) => (
-                                    <div key={apt.id} className="appointment-item">
-                                        <h3 className="appointment-doctor text-black">{apt.name}</h3>
-                                        <p className="appointment-date">{apt.condition}</p>
-                                        <div className="flex justify-between items-center mt-2">
-                                            <span className="font-bold text-teal-700">{apt.time}</span>
-                                            <span className={`appointment-badge ${apt.badge}`}>{apt.status}</span>
+                                {todaysAppointments.length > 0 ? (
+                                    todaysAppointments.slice(0, 3).map((apt) => (
+                                        <div key={apt.id} className="appointment-item">
+                                            <h3 className="appointment-doctor text-black">{apt.name}</h3>
+                                            <p className="appointment-date">{apt.condition}</p>
+                                            <div className="flex justify-between items-center mt-2">
+                                                <span className="font-bold text-teal-700">{apt.time}</span>
+                                                <span className={`appointment-badge ${apt.badge}`}>{apt.status}</span>
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))
+                                ) : (
+                                    <div className="p-4 text-center text-gray-500">No appointments scheduled for today.</div>
+                                )}
                             </div>
                         </div>
 
-                        {/* Recent Patients */}
                         <div className="content-card">
                             <div className="card-header">
                                 <h2 className="card-title">Recent Patients</h2>
-                                <Link href="#" className="view-all-link">View All</Link>
+                                <Link href="/dashboard/doctor/patients" className="view-all-link">View All</Link>
                             </div>
                             <div className="patients-list">
-                                {recentPatients.map((patient) => (
-                                    <div key={patient.id} className="patient-item">
-                                        <h3 className="patient-name">{patient.name}</h3>
-                                        <p className="patient-visit">Last Visit: {patient.lastVisit}</p>
-                                        <span className={`patient-badge ${patient.statusColor}`}>{patient.status}</span>
-                                    </div>
-                                ))}
+                                {recentPatients.length > 0 ? (
+                                    recentPatients.slice(0, 3).map((patient) => (
+                                        <div key={patient.id} className="patient-item">
+                                            <h3 className="patient-name">{patient.name}</h3>
+                                            <p className="patient-visit">Last Visit: {patient.lastVisit}</p>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="p-4 text-center text-gray-500">No recent patient history found.</div>
+                                )}  
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <DoctorProfileModal
+                isOpen={isProfileModalOpen}
+                onClose={() => setIsProfileModalOpen(false)}
+                doctor={data.doctor || null}
+                onSuccess={fetchData}
+            />
+            <ResetPasswordModal
+                isOpen={isResetPasswordModalOpen}
+                onClose={() => setIsResetPasswordModalOpen(false)}
+            />
         </div>
     );
 }

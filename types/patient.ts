@@ -1,0 +1,67 @@
+export interface Patient {
+    id: number;
+    patient_code: string;
+    first_name: string;
+    middle_name?: string;
+    last_name: string;
+    full_name: string;
+    email?: string;
+    phone_number: string;
+    date_of_birth: string;
+    age?: number;
+    gender: string;
+    blood_group?: string;
+    address?: string;
+    city?: string;
+    state?: string;
+    zip_code?: string;
+    emergency_contact_name?: string;
+    emergency_contact_phone?: string;
+    emergency_contact_relation?: string;
+    occupation?: string;
+    marital_status?: string;
+    nationality?: string;
+    language_preference?: string;
+    photo_url?: string | null;
+    medical_history?: string;
+    allergies?: string;
+    chronic_conditions?: string;
+    current_medications?: string;
+    insurance_provider?: string;
+    insurance_policy_number?: string;
+    insurance_expiry_date?: string;
+    created_at: string;
+    created_by: number;
+    updated_at?: string;
+    updated_by?: number;
+}
+
+export interface PatientCreateRequest {
+    first_name: string;
+    middle_name?: string;
+    last_name: string;
+    email?: string;
+    phone_number: string;
+    date_of_birth: string;
+    age: number;
+    gender: 'male' | 'female' | 'other';
+    blood_group: string;
+    address: string;
+    city: string;
+    state: string;
+    zip_code: string;
+    emergency_contact_name: string;
+    emergency_contact_phone: string;
+    emergency_contact_relation: string;
+    occupation?: string;
+    marital_status?: 'single' | 'married' | 'divorced' | 'widowed';
+    nationality: string;
+    language_preference?: string;
+    medical_history?: string;
+    allergies?: string;
+    chronic_conditions?: string;
+    current_medications?: string;
+    insurance_provider?: string;
+    insurance_policy_number?: string;
+    insurance_expiry_date?: string;
+}

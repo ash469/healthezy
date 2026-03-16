@@ -90,3 +90,26 @@
         left: 60%;
     }
 }
+
+/* Decorative Circles (Stats Card Style) */
+.hero-stat-circle {
+    position: absolute;
+    width: 200px;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.hero-stat-circle.top-right {
+    top: 0;
+    right: 0;
+    transform: translate(30%, -30%);
+}
+
+.hero-stat-circle.bottom-left {
+    bottom: 0;
+    left: 0;
+    transform: translate(-30%, 30%);
+}

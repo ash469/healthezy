@@ -6,7 +6,8 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import { Document, Page, Text, View, StyleSheet, Image as PDFImage, pdf } from '@react-pdf/renderer';
 import '@/components/doctors/Confirmation.css';
-import { getDoctorById } from '@/data/doctors';
+import { getDoctorById } from '@/services/doctor';
+import type { Doctor } from '@/types/doctor';
 
 // --- PDF Styles and Document Definition ---
 const styles = StyleSheet.create({
@@ -107,6 +108,13 @@ const AppointmentPDF = ({ data }: { data: any }) => (
 
             <Text style={styles.sectionTitle}>Appointment Details</Text>
 
+            {data.appointmentNumber && (
+                <>
+                    <Text style={styles.label}>Appointment Number:</Text>
+                    <Text style={[styles.value, { fontWeight: 'bold' }]}>{data.appointmentNumber}</Text>
+                </>
+            )}
+
             <Text style={styles.label}>Patient:</Text>
             <Text style={[styles.value, { fontWeight: 'bold' }]}>{data.patient}</Text>
 
@@ -127,14 +135,44 @@ export default function BookingConfirmationPage() {
 
     const doctorIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
     const doctorId = parseInt(doctorIdStr, 10);
-    const doctor = getDoctorById(doctorId);
 
-    const date = searchParams.get('date') || '25 Nov 2025 | Tuesday';
-    const slot = searchParams.get('slot') || '10:00';
+    const [doctor, setDoctor] = useState<Doctor | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         setIsClient(true);
-    }, []);
+        const fetchDoctor = async () => {
+            if (doctorId) {
+                try {
+                    const data = await getDoctorById(doctorId);
+                    setDoctor(data);
+                } catch (error) {
+                    console.error("Failed to fetch doctor:", error);
+                } finally {
+                    setLoading(false);
+                }
+            } else {
+                setLoading(false);
+            }
+        };
+        fetchDoctor();
+    }, [doctorId]);
+
+    const date = searchParams.get('date') || '25 Nov 2025 | Tuesday';
+    const slot = searchParams.get('slot') || '10:00';
+    const patientName = searchParams.get('patientName') || 'Guest Patient';
+    const appointmentNumber = searchParams.get('appointmentNumber');
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#009ca6]"></div>
+                    <p className="mt-4 text-gray-600">Loading booking details...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!doctor) {
         return (
@@ -152,15 +190,16 @@ export default function BookingConfirmationPage() {
 
     const bookingDetails = {
         doctor: {
-            imageUrl: doctor.photoUrl || '/doctor.png',
-            name: doctor.fullName || 'Doctor',
+            imageUrl: doctor.photo_url || '/doctor.png',
+            name: doctor.full_name || `${doctor.first_name || ''} ${doctor.last_name || ''}`.trim() || 'Doctor',
             specialty: doctor.specialization || '',
-            hospital: doctor.hospitalName || ''
+            hospital: doctor.hospital_name || ''
         },
-        patient: 'Mr. Rahul Mishra',
+        patient: patientName,
         date: date,
         time: slot,
-        slot: 'Confirmed Slot'
+        slot: 'Confirmed Slot',
+        appointmentNumber: appointmentNumber
     };
 
     const handleDownload = async () => {
@@ -190,20 +229,26 @@ export default function BookingConfirmationPage() {
                 <div className="confirmation-doctor-section">
                     <div className="conf-doc-img">
                         <Image
-                            src={doctor.photoUrl || '/doctor.png'}
-                            alt={doctor.fullName || 'Doctor'}
+                            src={doctor.photo_url || '/doctor.png'}
+                            alt={doctor.full_name || 'Doctor'}
                             width={130}
                             height={130}
                         />
                     </div>
-                    <h3>{doctor.fullName}</h3>
+                    <h3>{doctor.full_name || `${doctor.first_name || ''} ${doctor.last_name || ''}`.trim()}</h3>
                     <p>{doctor.specialization}</p>
-                    <p>{doctor.hospitalName}</p>
+                    <p>{doctor.hospital_name}</p>
                 </div>
 
                 <div className="confirmation-details-section">
                     <h2 className="success-title">Appointment Booked For</h2>
                     <h3 className="patient-name">{bookingDetails.patient}</h3>
+
+                    {bookingDetails.appointmentNumber && (
+                        <p className="appointment-number" style={{ fontSize: '1.2em', fontWeight: 'bold', color: '#0e8a93', marginBottom: '10px' }}>
+                            ID: {bookingDetails.appointmentNumber}
+                        </p>
+                    )}
 
                     <div className="booking-info">
                         <p>{bookingDetails.date}</p>

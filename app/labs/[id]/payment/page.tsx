@@ -126,15 +126,15 @@ export default function LabPaymentPage() {
                     <tbody>
                         <tr>
                             <td>Tests Total</td>
-                            <td>{charges.subtotal.toFixed(2)}</td>
+                            <td>{Number(charges.subtotal || 0).toFixed(2)}</td>
                         </tr>
                         <tr>
                             <td>Other Charges</td>
-                            <td>{charges.other.toFixed(2)}</td>
+                            <td>{Number(charges.other || 0).toFixed(2)}</td>
                         </tr>
                         <tr className="total-row">
                             <td>Total Amount Payable</td>
-                            <td>{charges.total.toFixed(2)}</td>
+                            <td>{Number(charges.total || 0).toFixed(2)}</td>
                         </tr>
                     </tbody>
                 </table>

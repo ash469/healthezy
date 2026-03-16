@@ -1,8 +1,10 @@
+import type { UserProfile } from '@/services/auth/types';
+
 export interface PatientInfo {
     name: string;
-    age: number;
-    gender: string;
-    bloodGroup: string;
+    age?: number;
+    gender?: string;
+    bloodGroup?: string;
     mobileNo: string;
     emailId: string;
     avatar: string;
@@ -18,7 +20,7 @@ export interface PatientStats {
 export interface AppointmentItem {
     id: number;
     doctor: string;
-    specialization: string;
+    patient: string;
     date: string;
     status: string;
     badge: string;
@@ -29,22 +31,24 @@ export interface LabReportItem {
     lab: string;
     test: string;
     date: string;
+    price: number | string;
     status: string;
     badge: string;
 }
 
-export interface PatientFamilyMember {
-    id: number;
-    name: string;
+import type { Patient } from '@/types/patient';
+
+export interface PatientFamilyMember extends Patient {
+    name: string; // Keep name for backward compatibility if needed, or rely on full_name from Patient
     type: string;
     nextVisit: string;
     badge: string;
 }
 
-export interface RecentOrderItem {
+export interface RecentReportItem {
     id: number;
-    pharmacy: string;
-    medicine: string;
+    lab: string;
+    test: string;
     status: string;
     badge: string;
 }
@@ -57,11 +61,12 @@ export interface InsuranceClaim {
 }
 
 export interface PatientDashboardData {
+    userInfo?: UserProfile;
     patientInfo: PatientInfo;
     stats: PatientStats;
     upcomingAppointments: AppointmentItem[];
     labReports: LabReportItem[];
     patients: PatientFamilyMember[];
-    recentOrders: RecentOrderItem[];
+    recentReports: RecentReportItem[];
     insuranceClaims: InsuranceClaim[];
 }

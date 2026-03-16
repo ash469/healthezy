@@ -1,36 +1,83 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import Image from 'next/image';
 import '@/components/doctors/SlotBooking.css';
-import { getHospitalById } from '@/data/hospitals';
-import { getDoctorById } from '@/data/doctors';
-import { getSlotsByDay } from '@/data/appointments';
-import { categorizeTimeSlots, convertTo12Hour, getDayName } from '@/utils/timeSlots';
+import { getHospitalById } from '@/services/hospital';
+import { getDoctorById } from '@/services/doctor';
+import { getDoctorSchedule } from '@/services/appointment';
+import { Hospital } from '@/types/hospital';
+import { Doctor } from '@/types/doctor';
+import { DoctorScheduleSlot } from '@/types/appointment';
+import { categorizeTimeSlots, convertTo12Hour, getDayName, generateTimeSlots } from '@/utils/timeSlots';
+import { useAuth } from '@/contexts/AuthContext';
+import LoginPrompt from '@/components/auth/LoginPrompt';
 
 export default function HospitalSlotBookingPage() {
     const router = useRouter();
     const params = useParams();
     const hospitalIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const hospitalId = parseInt(hospitalIdStr, 10);
-    const doctorIdStr = Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || '');
-    const doctorId = parseInt(doctorIdStr, 10);
+    const hospitalIdNum = parseInt(Array.isArray(params.id) ? params.id[0] : (params.id || ''), 10);
+    const doctorIdNum = parseInt(Array.isArray(params.doctorId) ? params.doctorId[0] : (params.doctorId || ''), 10);
 
-    const hospital = getHospitalById(hospitalId);
-    const doctor = getDoctorById(doctorId);
+    const { isAuthenticated, isLoading: authLoading } = useAuth();
+    const [showAuthPrompt, setShowAuthPrompt] = useState(false);
+
+    const [hospital, setHospital] = useState<Hospital | null>(null);
+    const [doctor, setDoctor] = useState<Doctor | null>(null);
+    const [schedule, setSchedule] = useState<DoctorScheduleSlot[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const [selectedSlot, setSelectedSlot] = useState<string | null>(null);
-    const [currentDate, setCurrentDate] = useState(new Date('2025-11-25'));
+    const [currentDate, setCurrentDate] = useState(new Date()); // Default to today/tomorrow logic can be improved
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (hospitalIdNum) {
+                    const hospData = await getHospitalById(hospitalIdNum);
+                    setHospital(hospData);
+                }
+                if (doctorIdNum) {
+                    const docData = await getDoctorById(doctorIdNum);
+                    setDoctor(docData);
+                    const scheduleData = await getDoctorSchedule(doctorIdNum);
+                    setSchedule(scheduleData);
+                }
+            } catch (error) {
+                console.error("Failed to fetch details:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, [hospitalIdNum, doctorIdNum]);
 
     // Get slots for the current selected day
     const dayName = getDayName(currentDate);
-    const daySlots = getSlotsByDay(doctorId, dayName);
+    // Use the schedule data to generate slots
+    const daySlots = useMemo(() => {
+        if (!schedule.length) return [];
+        return generateTimeSlots(schedule, currentDate);
+    }, [schedule, currentDate]);
+
 
     // Categorize time slots into morning, afternoon, evening
     const categorizedSlots = useMemo(() => {
         return categorizeTimeSlots(daySlots);
     }, [daySlots]);
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-[400px]">
+                <div className="text-center">
+                    <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#009ca6]"></div>
+                    <p className="mt-4 text-gray-600">Loading details...</p>
+                </div>
+            </div>
+        );
+    }
 
     if (!hospital) {
         return (
@@ -60,6 +107,7 @@ export default function HospitalSlotBookingPage() {
         const newDate = new Date(currentDate);
         newDate.setDate(newDate.getDate() + days);
         setCurrentDate(newDate);
+        setSelectedSlot(null); // Reset selection on date change
     };
 
     const handleSlotClick = (slot: string) => {
@@ -67,8 +115,12 @@ export default function HospitalSlotBookingPage() {
     };
 
     const handleBook = () => {
-        if (selectedSlot) {
-            router.push(`/hospital/${hospitalId}/doctors/${doctorId}/payment?slot=${selectedSlot}&date=${encodeURIComponent(formatDate(currentDate))}`);
+        if (!selectedSlot) return;
+
+        if (isAuthenticated) {
+            router.push(`/hospital/${hospitalIdNum}/doctors/${doctorIdNum}/payment?slot=${selectedSlot}&date=${encodeURIComponent(formatDate(currentDate))}`);
+        } else {
+            setShowAuthPrompt(true);
         }
     };
 
@@ -77,7 +129,7 @@ export default function HospitalSlotBookingPage() {
             <div className="doctor-summary-card" style={{ flexDirection: 'row', alignItems: 'flex-start', textAlign: 'left', padding: '24px', gap: '24px' }}>
                 <div className="doctor-summary-image" style={{ width: '120px', height: '120px', marginBottom: 0 }}>
                     <Image
-                        src={hospital.logoUrl || '/hospital.png'}
+                        src={hospital.logo_url || '/hospital.png'}
                         alt={hospital.name}
                         width={120}
                         height={120}
@@ -98,7 +150,8 @@ export default function HospitalSlotBookingPage() {
                             fontSize: '0.8rem',
                             fontWeight: 'bold'
                         }}>
-                            {hospital.rating} ★
+                            {/* Rating removed as it is not in Hospital type */}
+                            {/* {hospital.rating} ★ */}
                         </span>
                     </div>
                 </div>
@@ -183,6 +236,13 @@ export default function HospitalSlotBookingPage() {
                     Book Appointment
                 </button>
             </div>
+
+            {showAuthPrompt && (
+                <LoginPrompt 
+                    message="Please login to complete your hospital appointment booking" 
+                    onClose={() => setShowAuthPrompt(false)} 
+                />
+            )}
         </div>
     );
 }

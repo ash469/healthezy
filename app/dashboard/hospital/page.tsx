@@ -1,15 +1,57 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import '../../dashboard.css';
-import { getHospitalDashboardData } from '@/services/hospital';
+import { getHospitalDashboardData, getHospitalApplication } from '@/services/hospital';
+import { getCurrentUser } from '@/services/auth';
+import type { HospitalDashboardData } from '@/types/dashboard/hospital';
+import type { UserProfile } from '@/services/auth/types';
+import type { HospitalApplicationResponse } from '@/types/hospital';
 
-export default async function HospitalDashboard() {
-    const data = await getHospitalDashboardData();
+export default function HospitalDashboard() {
+    const [data, setData] = useState<HospitalDashboardData | null>(null);
+    const [applications, setApplications] = useState<HospitalApplicationResponse[]>([]);
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [loading, setLoading] = useState(true);
 
-    if (!data) {
-        return <div className="p-8 text-center text-[#0f766e] font-semibold">Failed to load hospital dashboard data.</div>;
+    useEffect(() => {
+        Promise.all([
+            getCurrentUser().catch(err => {
+                console.error("Failed to fetch user:", err);
+                return null;
+            }),
+            getHospitalApplication().catch(err => {
+                console.error("Failed to fetch apps:", err);
+                return [];
+            }),
+            getHospitalDashboardData().catch(err => {
+                console.error("Failed to fetch dashboard data:", err);
+                return null;
+            })
+        ]).then(([userRes, appsRes, dataRes]) => {
+            setUser(userRes);
+            setApplications(appsRes);
+            setData(dataRes);
+            setLoading(false);
+        });
+    }, []);
+
+    if (loading) {
+        return <div className="p-8 text-center text-[#0f766e] font-semibold">Loading dashboard data...</div>;
     }
 
-    const { hospitalInfo, stats, todaysAppointments, activeDoctors } = data;
+    const hospitalInfo = data?.hospitalInfo || {
+        name: user ? (('first_name' in user) ? `${user.first_name} ${user.last_name || ''}`.trim() : user.email) : 'Hospital Profile',
+        speciality: 'Pending Application',
+        mobileNo: user?.phone_number || '--',
+        emailId: user?.email || '--',
+        logoUrl: '',
+    };
+
+    const stats = data?.stats || { appointmentsToday: 0, activeDoctors: 0, reportsProcessed: 0 };
+    const todaysAppointments = data?.todaysAppointments || [];
+    const activeDoctors = data?.activeDoctors || [];
 
     return (
         <div className="patient-dashboard">
@@ -32,8 +74,12 @@ export default async function HospitalDashboard() {
                     <div className="profile-card">
                         <div className="profile-avatar">
                             {/* Placeholder Avatar */}
-                            <div className="w-full h-full bg-white flex items-center justify-center text-gray-400">
-                                <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                            <div className="w-full h-full bg-white flex items-center justify-center text-gray-400 overflow-hidden">
+                                {hospitalInfo.logoUrl ? (
+                                    <img src={hospitalInfo.logoUrl} alt={hospitalInfo.name} className="w-full h-full object-cover" />
+                                ) : (
+                                    <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                                )}
                             </div>
                         </div>
                         <h3 className="profile-name">{hospitalInfo.name}</h3>
@@ -44,15 +90,11 @@ export default async function HospitalDashboard() {
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Mobile No:</span>
-                                <span className="detail-value">{hospitalInfo.mobileNo}</span>
+                                <span className="detail-value">{hospitalInfo.mobileNo || '--'}</span>
                             </div>
                             <div className="detail-row">
                                 <span className="detail-label">Email Id:</span>
-                                <span className="detail-value text-xs break-all">{hospitalInfo.emailId}</span>
-                            </div>
-                            <div className="detail-row">
-                                <span className="detail-label">Address:</span>
-                                <span className="detail-value text-right text-xs" style={{ maxWidth: '60%' }}>{hospitalInfo.address}</span>
+                                <span className="detail-value text-xs break-all">{hospitalInfo.emailId || '--'}</span>
                             </div>
                         </div>
                     </div>
@@ -60,12 +102,16 @@ export default async function HospitalDashboard() {
                     {/* Quick Actions */}
                     <div className="quick-links-card">
                         <h3 className="section-title">Quick Actions</h3>
-                        <button className="quick-link-btn teal">
+
+                        <Link href="/dashboard/hospital/apply" className="quick-link-btn teal block text-center mb-3" style={{ textDecoration: 'none' }}>
+                            Register New Hospital
+                        </Link>
+                        <Link href="/dashboard/hospital/doctors" className="quick-link-btn block text-center mb-3" style={{ background: 'white', color: '#0f766e', border: '1px solid #0f766e', textDecoration: 'none' }}>
                             Manage Doctors
-                        </button>
-                        <button className="quick-link-btn" style={{ background: 'white', color: '#0f766e', border: '1px solid #0f766e' }}>
+                        </Link>
+                        <Link href="/dashboard/hospital/appointments" className="quick-link-btn block text-center" style={{ background: 'white', color: '#0f766e', border: '1px solid #0f766e', textDecoration: 'none' }}>
                             Manage Appointments
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Upload Patient Report (Placed in Left Column for Consistency with Lab/Doctor) */}
@@ -115,13 +161,17 @@ export default async function HospitalDashboard() {
                                 <Link href="#" className="view-all-link">View All</Link>
                             </div>
                             <div className="appointments-list">
-                                {todaysAppointments.map((apt) => (
-                                    <div key={apt.id} className="appointment-item">
-                                        <h3 className="appointment-doctor text-black">{apt.name}</h3>
-                                        <p className="appointment-date">{apt.details}</p>
-                                        <span className={`bg-teal-600 text-white px-2 py-1 rounded text-xs font-bold absolute top-4 right-4`}>{apt.time}</span>
-                                    </div>
-                                ))}
+                                {todaysAppointments.length === 0 ? (
+                                    <div className="text-gray-500 text-sm py-4 text-center">No appointments today.</div>
+                                ) : (
+                                    todaysAppointments.slice(0, 3).map((apt) => (
+                                        <div key={apt.id} className="appointment-item relative">
+                                            <h3 className="appointment-doctor text-black">{apt.name}</h3>
+                                            <p className="appointment-date">{apt.details}</p>
+                                            <span className={`bg-teal-600 text-white px-2 py-1 rounded text-xs font-bold absolute top-4 right-4`}>{apt.time}</span>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
 
@@ -132,13 +182,42 @@ export default async function HospitalDashboard() {
                                 <Link href="#" className="view-all-link">View All</Link>
                             </div>
                             <div className="patients-list">
-                                {activeDoctors.map((doc) => (
-                                    <div key={doc.id} className="patient-item">
-                                        <h3 className="patient-name">{doc.name}</h3>
-                                        <p className="patient-visit">{doc.speciality}</p>
-                                        <span className={`patient-badge ${doc.statusColor}`}>{doc.status}</span>
-                                    </div>
-                                ))}
+                                {activeDoctors.length === 0 ? (
+                                    <div className="text-gray-500 text-sm py-4 text-center">No active doctors found.</div>
+                                ) : (
+                                    activeDoctors.slice(0, 3).map((doc) => (
+                                        <div key={doc.id} className="patient-item relative">
+                                            <h3 className="patient-name">{doc.name}</h3>
+                                            <p className="patient-visit text-xs text-gray-500 mt-1">{doc.speciality}</p>
+                                            <span className={`patient-badge ${doc.statusColor}`} style={{ position: 'absolute', top: '1rem', right: '1rem' }}>{doc.status}</span>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Hospital Applications */}
+                        <div className="content-card" style={{ gridColumn: '1 / -1' }}>
+                            <div className="card-header">
+                                <h2 className="card-title">Hospital Applications</h2>
+                                <Link href="#" className="view-all-link">View All</Link>
+                            </div>
+                            <div className="patients-list">
+                                {applications.length === 0 ? (
+                                    <div className="text-gray-500 text-sm py-4 text-center">No applications found.</div>
+                                ) : (
+                                    applications.slice(0, 3).map((app) => (
+                                        <div key={app.id} className="patient-item relative mb-2">
+                                            <h3 className="patient-name">{app.name}</h3>
+                                            <p className="patient-visit text-xs text-gray-500 mt-1">{app.city}, {app.state}</p>
+                                            <span className={`patient-badge ${app.status === 'ACCEPTED' ? 'bg-green-600' :
+                                                app.status === 'WITHDRAWN' ? 'bg-red-600' :
+                                                    app.status === 'REVIEW' ? 'bg-blue-600' :
+                                                        'bg-yellow-500'
+                                                }`} style={{ position: 'absolute', top: '1rem', right: '1rem' }}>{app.status}</span>
+                                        </div>
+                                    ))
+                                )}
                             </div>
                         </div>
                     </div>
