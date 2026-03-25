@@ -1,10 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams, useParams } from 'next/navigation';
 import Image from 'next/image';
 import '@/components/doctors/Payment.css';
-import { getLabById } from '@/data/labs';
+import { getLabById, getLabTests } from '@/services/lab';
+import { LabResponse, LabTestResponse } from '@/types/lab';
 import LoginPrompt from '@/components/auth/LoginPrompt';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -12,37 +13,86 @@ export default function LabPaymentPage() {
     const router = useRouter();
     const params = useParams();
     const searchParams = useSearchParams();
-    const { isAuthenticated, isLoading } = useAuth();
+    const { isAuthenticated, isLoading: authLoading } = useAuth();
 
-    const labId = Array.isArray(params.id) ? params.id[0] : (params.id || '');
-    const lab = getLabById(parseInt(labId));
+    const labIdStr = Array.isArray(params.id) ? params.id[0] : (params.id || '');
+    const labId = parseInt(labIdStr, 10);
+
+    const [lab, setLab] = useState<LabResponse | null>(null);
+    const [selectedTests, setSelectedTests] = useState<LabTestResponse[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const slot = searchParams.get('slot');
     const date = searchParams.get('date');
-    const testIds = searchParams.get('tests')?.split(',').map(id => parseInt(id)) || [];
+    const testIdsQuery = searchParams.get('tests');
 
-    const selectedTests = lab?.availableTests.filter(t => testIds.includes(t.id)) || [];
+    useEffect(() => {
+        if (!labId) return;
+
+        async function fetchData() {
+            setLoading(true);
+            try {
+                const [labData, testsData] = await Promise.all([
+                    getLabById(labId),
+                    getLabTests(labId)
+                ]);
+
+                if (!labData) {
+                    setError('Laboratory not found');
+                    return;
+                }
+
+                setLab(labData);
+
+                if (testIdsQuery) {
+                    const testIds = testIdsQuery.split(',').map(id => parseInt(id));
+                    const filtered = (testsData || []).filter(t => testIds.includes(t.id));
+                    setSelectedTests(filtered);
+                }
+            } catch (err) {
+                console.error("Failed to fetch payment data", err);
+                setError('Failed to load payment details');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchData();
+    }, [labId, testIdsQuery]);
 
     const [step, setStep] = useState<'summary' | 'method'>('summary');
     const [selectedMethod, setSelectedMethod] = useState('paytm');
 
-    const subtotal = selectedTests.reduce((sum, t) => sum + t.price, 0);
+    const subtotal = selectedTests.reduce((sum, t) => sum + Number(t.test_price || 0), 0);
     const charges = {
         subtotal: subtotal,
         other: 0.00,
         total: subtotal
     };
 
-    if (!lab) return <div>Lab not found</div>;
-
-    // Show loading state while checking authentication
-    if (isLoading) {
+    // Show loading state while checking authentication or fetching data
+    if (authLoading || loading) {
         return (
             <div className="flex items-center justify-center min-h-[400px]">
                 <div className="text-center">
                     <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-[#009ca6]"></div>
-                    <p className="mt-4 text-gray-600">Loading...</p>
+                    <p className="mt-4 text-gray-600">Loading Payment Details...</p>
                 </div>
+            </div>
+        );
+    }
+
+    if (error || !lab) {
+        return (
+            <div className="flex flex-col items-center justify-center min-h-[400px]">
+                <h2 className="text-xl font-bold text-gray-800 mb-2">{error || 'Lab not found'}</h2>
+                <button
+                    onClick={() => router.back()}
+                    className="bg-[#009ca6] text-white px-6 py-2 rounded-lg hover:bg-[#007c85] transition-colors"
+                >
+                    Go Back
+                </button>
             </div>
         );
     }
@@ -57,7 +107,8 @@ export default function LabPaymentPage() {
     };
 
     const handleConfirm = () => {
-        router.push(`/labs/${lab.id}/booking-confirmation?slot=${slot}&date=${date}&tests=${testIds.join(',')}`);
+        const testIds = selectedTests.map(t => t.id).join(',');
+        router.push(`/labs/${lab.id}/booking-confirmation?slot=${slot}&date=${date}&tests=${testIds}`);
     };
 
     return (
@@ -68,16 +119,18 @@ export default function LabPaymentPage() {
                 <div className="payment-doctor-card">
                     <div className="payment-doctor-image">
                         <Image
-                            src={lab.imageUrl}
+                            src={lab.logo_url || lab.imageUrl || '/lab.png'}
                             alt={lab.name}
                             width={120}
                             height={120}
+                            className="object-contain"
+                            unoptimized={true}
                         />
                     </div>
                     <div className="payment-doctor-details">
                         <h3>{lab.name}</h3>
                         <p>{lab.address}</p>
-                        <p>{lab.location}</p>
+                        <p>{lab.city && lab.state ? `${lab.city}, ${lab.state}` : (lab.city || lab.state || '')}</p>
                     </div>
                 </div>
 
@@ -88,7 +141,7 @@ export default function LabPaymentPage() {
                         {selectedTests.map(test => (
                             <li key={test.id} className="flex justify-between mb-2 text-gray-600">
                                 <span>{test.name}</span>
-                                <span className="font-bold">₹{test.price}</span>
+                                <span className="font-bold">₹{test.test_price}</span>
                             </li>
                         ))}
                     </ul>
@@ -154,3 +207,4 @@ export default function LabPaymentPage() {
         </div>
     );
 }
+
