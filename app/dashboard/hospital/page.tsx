@@ -56,7 +56,7 @@ export default function HospitalDashboard() {
     return (
         <div className="patient-dashboard">
             <div className="dashboard-header">
-                <h1 className="text-4xl md:text-5xl font-bold text-[#0f766e] mb-8">
+                <h1 className="dashboard-title">
                     Hospital Dashboard
                 </h1>
                 <button className="edit-profile-btn bg-[#0d5c63]">
@@ -103,13 +103,13 @@ export default function HospitalDashboard() {
                     <div className="quick-links-card">
                         <h3 className="section-title">Quick Actions</h3>
 
-                        <Link href="/dashboard/hospital/apply" className="quick-link-btn teal block text-center mb-3" style={{ textDecoration: 'none' }}>
+                        <Link href="/dashboard/hospital/apply" className="quick-link-btn teal block text-center mb-3">
                             Register New Hospital
                         </Link>
-                        <Link href="/dashboard/hospital/doctors" className="quick-link-btn block text-center mb-3" style={{ background: 'white', color: '#0f766e', border: '1px solid #0f766e', textDecoration: 'none' }}>
+                        <Link href="/dashboard/hospital/doctors" className="quick-link-btn block text-center mb-3 bg-white text-[#0f766e] border border-[#0f766e] hover:bg-teal-50 transition-colors">
                             Manage Doctors
                         </Link>
-                        <Link href="/dashboard/hospital/appointments" className="quick-link-btn block text-center" style={{ background: 'white', color: '#0f766e', border: '1px solid #0f766e', textDecoration: 'none' }}>
+                        <Link href="/dashboard/hospital/appointments" className="quick-link-btn block text-center bg-white text-[#0f766e] border border-[#0f766e] hover:bg-teal-50 transition-colors">
                             Manage Appointments
                         </Link>
                     </div>
@@ -133,8 +133,8 @@ export default function HospitalDashboard() {
 
                 {/* Right Column - Stats and Content */}
                 <div className="content-section">
-                    {/* Stats Grid - 3 Columns */}
-                    <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                    {/* Stats Grid */}
+                    <div className="stats-grid">
                         <div className="stat-card bg-gradient-to-br from-teal-400 to-teal-500">
                             <div className="stat-number">{stats.appointmentsToday}</div>
                             <div className="stat-label">Appointments Today</div>

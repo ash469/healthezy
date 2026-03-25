@@ -121,9 +121,9 @@ export default function LabDashboard() {
                 </div>
             )}
 
-            <div className="dashboard-header text-black flex items-center justify-between">
+            <div className="dashboard-header flex items-center justify-between">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-black text-[#0f766e] tracking-tight">
+                    <h1 className="dashboard-title">
                         Lab Dashboard
                     </h1>
                 </div>
@@ -141,14 +141,18 @@ export default function LabDashboard() {
                 <div className="profile-section">
                     <div className="profile-card">
                         <div className="profile-avatar">
-                            {/* Use avatar image or fallback */}
-                            <img src={labInfo.avatar} alt={labInfo.name} />
-                            <div className="w-full h-full bg-white flex items-center justify-center text-gray-400">
-                                <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24"><path d="M19.424 19.536a2 2 0 01-2.828 0L9.939 12.879l5.657-5.657 6.657 6.657a2 2 0 010 2.828l-2.829 2.829zM4.929 15.536l-2.829-2.829a2 2 0 010-2.828l6.657-6.657 5.657 5.657-9.485 9.485z" /></svg>
-                            </div>
+                            {labInfo.avatar ? (
+                                <img src={labInfo.avatar} alt={labInfo.name} />
+                            ) : (
+                                <div className="w-full h-full bg-white flex items-center justify-center text-[#0d5c63]">
+                                    <svg className="w-12 h-12" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M19.424 19.536a2 2 0 01-2.828 0L9.939 12.879l5.657-5.657 6.657 6.657a2 2 0 010 2.828l-2.829 2.829zM4.929 15.536l-2.829-2.829a2 2 0 010-2.828l6.657-6.657 5.657 5.657-9.485 9.485z" />
+                                    </svg>
+                                </div>
+                            )}
                         </div>
-                        <h3 className="profile-name text-black">{labInfo.name}</h3>
-                        <div className="profile-details text-black">
+                        <h3 className="profile-name">{labInfo.name}</h3>
+                        <div className="profile-details">
                             <div className="detail-row">
                                 <span className="detail-label">Speciality:</span>
                                 <span className="detail-value text-right" style={{ maxWidth: '60%' }}>{labInfo.speciality}</span>
@@ -172,39 +176,19 @@ export default function LabDashboard() {
                         </Link>
                         <button 
                             onClick={handleManageTests}
-                            className="quick-link-btn"
-                            style={{ 
-                                background: 'white', 
-                                color: '#0f766e', 
-                                border: '1px solid #0f766e',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '100%'
-                            }}
+                            className="quick-link-btn flex items-center justify-center w-full bg-white text-[#0f766e] border border-[#0f766e] hover:bg-teal-50 transition-colors"
                         >
                             Add / Update Test
                         </button>
                         <button 
                             onClick={handleManageBookings}
-                            className="quick-link-btn"
-                            style={{ 
-                                background: 'white', 
-                                color: '#0f766e', 
-                                border: '1px solid #0f766e',
-                                textDecoration: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                width: '100%'
-                            }}
+                            className="quick-link-btn flex items-center justify-center w-full bg-white text-[#0f766e] border border-[#0f766e] hover:bg-teal-50 transition-colors"
                         >
                             Manage Bookings
                         </button>
                     </div>
 
-                    {/* Upload Test Report (Matching Doctor Dashboard Style and Location) */}
+                    {/* Upload Test Report */}
                     <div className="insurance-card">
                         <h3 className="section-title">Upload Test Report</h3>
                         <div className="claims-count mb-4">Select Report File</div>
@@ -223,8 +207,8 @@ export default function LabDashboard() {
 
                 {/* Right Column - Stats and Content */}
                 <div className="content-section">
-                    {/* Stats Grid - Adapted for Lab Performance (3 cards) */}
-                    <div className="stats-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+                    {/* Stats Grid */}
+                    <div className="stats-grid">
                         <div className="stat-card bg-gradient-to-br from-teal-400 to-teal-500">
                             <div className="stat-number">{stats.testsToday}</div>
                             <div className="stat-label">Tests Today</div>
@@ -233,12 +217,12 @@ export default function LabDashboard() {
                         <div className="stat-card bg-gradient-to-br from-blue-400 to-blue-500">
                             <div className="stat-number">{stats.reportsPending}</div>
                             <div className="stat-label">Reports Pending</div>
-                            <Link href="/dashboard/lab/bookings" className="stat-link">View All</Link>
+                            <Link href="/dashboard/lab/bookings" className="view-all-link">View All</Link>
                         </div>
                         <div className="stat-card bg-gradient-to-br from-purple-400 to-purple-500">
                             <div className="stat-number">{stats.totalPatients}</div>
                             <div className="stat-label">Total Patients</div>
-                            <Link href="/dashboard/lab/bookings" className="stat-link">View All</Link>
+                            <Link href="/dashboard/lab/bookings" className="view-all-link">View All</Link>
                         </div>
                     </div>
 
