@@ -92,7 +92,7 @@ export default function MyAppointmentsPage() {
 
         try {
             // Optimistically update UI or show loading
-            await cancelAppointment(appointmentId, patientId);
+            await cancelAppointment(appointmentId);
             alert('Appointment cancelled successfully');
             // Refresh list
             fetchAppointments();

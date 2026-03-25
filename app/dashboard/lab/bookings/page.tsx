@@ -1,13 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
 import { getLabBookings, getMyManagedLabs } from '@/services/lab';
 import type { LabBookingDetailResponse, LabResponse } from '@/types/lab';
 import '@/app/dashboard.css';
 
-export default function LabBookingsPage() {
+function LabBookingsContent() {
     const searchParams = useSearchParams();
     const urlLabId = searchParams.get('lab_id');
     
@@ -192,7 +192,7 @@ export default function LabBookingsPage() {
                                     </tr>
                                 )) : (
                                     <tr>
-                                        <td colSpan={6} className="px-6 py-20 text-center">
+                                        <td colSpan={7} className="px-6 py-20 text-center">
                                             <div className="flex flex-col items-center justify-center space-y-3">
                                                 <div className="p-4 bg-teal-50 rounded-full">
                                                     <svg className="w-10 h-10 text-teal-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
@@ -209,5 +209,17 @@ export default function LabBookingsPage() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function LabBookingsPage() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-600"></div>
+            </div>
+        }>
+            <LabBookingsContent />
+        </Suspense>
     );
 }

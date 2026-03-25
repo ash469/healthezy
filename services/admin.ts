@@ -59,5 +59,15 @@ export const adminService = {
     async listAllPatients(): Promise<AdminPatientResponse[]> {
         const response = await adminClient.get('/admin/patients');
         return response.data;
+    },
+
+    /**
+     * List Provider Admins (Hospitals or Labs)
+     * Filters all users by their specific administrative role.
+     */
+    async listProviderAdmins(entity: AdminEntity, active: boolean = true): Promise<AdminUserResponse[]> {
+        const users = await this.listAllUsers(active);
+        const role = entity === 'hospital' ? 'hospital-admin' : 'lab-admin';
+        return users.filter(user => user.role === role);
     }
 };
